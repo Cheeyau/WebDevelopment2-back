@@ -1,24 +1,27 @@
 <?php
 
-namespace Controller;
+namespace Controllers;
 
+use Service\OrderService;
 use Exception;
 
-use Service\ProductService;
-
-class ProductController extends Controller {
+class OrderController extends Controller {
 
     function __construct(
-        private $service = new ProductService()
+        private $service = new OrderService()
     ) {}
 
-    public function getAll(): mixed {
+    public function getAll() : mixed {
+        if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
+
         $products = $this->service->getAll($this->paginator()[0], $this->paginator()[1]);
 
         $this->respond($products);
     }
 
-    public function getById($id): mixed {
+    public function getById($id) {
+        if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
+
         $product = $this->service->getById($id);
 
         // we might need some kind of error checking that returns a 404 if the product is not found in the DB
@@ -29,7 +32,7 @@ class ProductController extends Controller {
         $this->respond($product);
     }
 
-    public function create(): mixed {
+    public function create() :mixed {
         if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
 
         try {
@@ -55,17 +58,5 @@ class ProductController extends Controller {
         }
 
         $this->respond($product);
-    }
-
-    public function delete($id): mixed {
-        if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
-
-        try {
-            $this->service->delete($id);
-        } catch (Exception $e) {
-            $this->respondWithError(500, $e->getMessage());
-        }
-
-        $this->respond(true);
     }
 }

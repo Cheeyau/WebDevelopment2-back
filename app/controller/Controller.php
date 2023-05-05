@@ -1,6 +1,6 @@
 <?php
 
-namespace Controller;
+namespace Controllers;
 
 use \Firebase\JWT\JWT;
 use \Firebase\JWT\Key;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Controller;
+namespace Controllers;
 
 use Service\UserService;
 use Firebase\JWT\JWT;
