@@ -14,7 +14,7 @@ class UserController extends Controller {
     ) {}
 
     public function login(): mixed {
-        $postedUser = $this->createObjectFromPostedJson("Model\\User");
+        $postedUser = $this->createObjectFromPostedJson("Model\User");
 
         $user = $this->service->checkUsernamePassword($postedUser->username, $postedUser->password);
         if(!$user) {
@@ -60,7 +60,7 @@ class UserController extends Controller {
         if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
 
         try {
-            $user = $this->createObjectFromPostedJson("Models\\USER");
+            $user = $this->createObjectFromPostedJson("Models\\User");
             $user = $this->service->create($user);
 
         } catch (Exception $e) {

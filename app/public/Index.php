@@ -11,9 +11,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $router = new \Bramus\Router\Router();
 
-$router->setNamespace('app\Controller');
-
-$router->setBasePath('/webdevelopment2');
+$router->setNamespace('\Controllers');
 
 $user = '/user';
 $router->post("/user/login", "UserController@login");
