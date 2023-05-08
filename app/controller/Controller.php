@@ -8,7 +8,7 @@ use \Exception;
 
 class Controller {
 
-    public function respond($data):mixed {
+    public function respond($data): mixed {
         $this->respondWithCode(200, $data);
     }
 

@@ -11,10 +11,12 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $router = new \Bramus\Router\Router();
 
-$router->setNamespace('\Controllers');
+$router->setNamespace('Controllers');
+
+$router->setBasePath("/WebDevelopment2/");
 
 $user = '/user';
-$router->post("/user/login", "UserController@login");
+$router->post('/user/login', 'UserController@login');
 
 $order = "/order";
 $orderController = "OrderController";

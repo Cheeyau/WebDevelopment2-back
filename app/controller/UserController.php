@@ -14,7 +14,7 @@ class UserController extends Controller {
     ) {}
 
     public function login(): mixed {
-        $postedUser = $this->createObjectFromPostedJson("Model\User");
+        $postedUser = $this->createObjectFromPostedJson("Model\\User");
 
         $user = $this->service->checkUsernamePassword($postedUser->username, $postedUser->password);
         if(!$user) {
