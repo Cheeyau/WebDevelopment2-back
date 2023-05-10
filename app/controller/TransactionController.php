@@ -7,9 +7,11 @@ use Exception;
 
 class TransactionController extends Controller {
 
-    function __construct(
-        private $service = new TransactionService()  
-    ) {}
+    private $service;
+
+    function __construct() {
+        $this->service = new TransactionService();  
+    }
 
     public function getAll(): mixed {
         if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");

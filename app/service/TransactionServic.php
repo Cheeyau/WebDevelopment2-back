@@ -8,10 +8,12 @@ Use Repository\UserRepository;
 
 class TransactionService {
     
-    function __construct(
-        private $repo = new TransactionRepository(),
-        private $user_repo = new UserRepository()
-    ) {}
+    private $repo;
+    private $user_repo;
+    function __construct() {
+        $this->repo  = new TransactionRepository();
+        $this->user_repo = new UserRepository();
+    }
 
     public function getAll($offset = NULL, $limit = NULL): mixed {
         return $this->repo->getAll($offset, $limit);

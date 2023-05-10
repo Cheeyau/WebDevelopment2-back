@@ -7,9 +7,10 @@ use Model\Product;
 
 class ProductService {
 
-    function __construct(
-        private $repo = new ProductRepository()
-    ) {}
+    private $repo;
+    function __construct() {
+        $this->repo = new ProductRepository();
+    }
 
     public function getAll($offset = NULL, $limit = NULL): mixed {
         return $this->repo->getAll($offset, $limit);

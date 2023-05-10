@@ -7,14 +7,19 @@ use Exception;
 
 class OrderController extends Controller {
 
+    private $service;
+
     function __construct(
-        private $service = new OrderService()
-    ) {}
+        ) {
+            $this->service = new OrderService();
+
+    }
 
     public function getAll() : mixed {
         if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
 
-        $products = $this->service->getAll($this->paginator()[0], $this->paginator()[1]);
+        $paginator[] = $this->paginator();
+        $products = $this->service->getAll($paginator[0], $paginator[1]);
 
         $this->respond($products);
     }

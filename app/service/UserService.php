@@ -7,9 +7,11 @@ use Repository\UserRepository;
 
 class UserService {
 
-    function __construct(
-        private $repo = new UserRepository()
-    ) {}
+    private $repo;
+
+    function __construct() {
+        $this->repo = new UserRepository();
+    }
 
     public function checkUsernamePassword(string $name, string $password): mixed {
         return $this->repo->checkPassword($name, $password);

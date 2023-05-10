@@ -9,9 +9,11 @@ use Exception;
 
 class UserController extends Controller {
 
-    function __construct(
-        private $service = new UserService()
-    ) {}
+    private $service;
+    
+    function __construct() {
+        $this->service = new UserService();
+    }
 
     public function login(): mixed {
         $postedUser = $this->createObjectFromPostedJson("Model\\User");

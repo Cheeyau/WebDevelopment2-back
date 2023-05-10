@@ -9,14 +9,15 @@ use Exception;
 
 class OrderService {
     
-    function __construct(
-        private $repo = new OrderRepository(),
-        private $user_repo = new UserRepository()
-    ) {}
+    private $user_repo;
+    private $repo;
+    function __construct() {
+        $this->user_repo = new UserRepository();
+        $this->repo = new OrderRepository();
+    }
 
     public function getAll($offset = NULL, $limit = NULL, $user_id): mixed {
         try {
-            
             return $this->repo->getAll($offset, $limit);
         } catch(Exception $e) {
             echo $e;

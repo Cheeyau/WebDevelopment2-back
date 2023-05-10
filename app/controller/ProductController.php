@@ -8,9 +8,11 @@ use Service\ProductService;
 
 class ProductController extends Controller {
 
-    function __construct(
-        private $service = new ProductService()
-    ) {}
+    private $service;
+    function __construct() {
+        $this->service = new ProductService();
+
+    }
 
     public function getAll(): mixed {
         $products = $this->service->getAll($this->paginator()[0], $this->paginator()[1]);
