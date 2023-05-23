@@ -11,33 +11,30 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $router = new \Bramus\Router\Router();
 
-$router->setNamespace('Controllers');
+$router->setNamespace('Controllers'); 
 
-$router->setBasePath("/WebDevelopment2/");
+$router->setBasePath("/WebDevelopment2");
 
-$user = '/user';
-$router->post('/user/login', 'UserController@login');
+$router->post("/users/login", "UserController@login");
 
-$order = "/order";
-$orderController = "OrderController";
-$router->get("$order", "$orderController@getAll");
-$router->get("$order/(\d+)", "$orderController@getById");
-$router->post("$order", "$orderController@create");
-$router->put("$order/(\d+)", "$orderController@update");
+$router->get("/orders", "OrderController@getAll");
+$router->get("/orders/(\d+)", "OrderController@getById");
+$router->post("/orders", "OrderController@create");
+$router->put("/orders/(\d+)", "OrderController@update");
 
-$transaction = "/transaction";
-$transactionController = "TransactionController";
-$router->get("$transaction", "$transactionController@getAll");
-$router->get("$transaction/(\d+)", "$transactionController@getById");
-$router->post("$transaction", "$transactionController@create");
-$router->put("$transaction/(\d+)", "$transactionController@update");
+$router->get("/transactions", "TransactionController@getAll");
+$router->get("/transactions/(\d+)", "TransactionController@getById");
+$router->post("/transactions", "TransactionController@create");
+$router->put("/transactions/(\d+)", "TransactionController@update");
 
-$product = "/product";
-$productController = "ProductController";
-$router->get("$product", "$productController@getAll");
-$router->get("$product/(\d+)", "$productController@getById");
-$router->post("$product", "$productController@create");
-$router->put("$product/(\d+)", "$productController@update");
-$router->delete("$product/(\d+)", "$productController@delete");
+$router->get("/products", "ProductController@getAll");
+$router->get("/products/(\d+)", "ProductController@getById");
+$router->post("/products", "ProductController@create");
+$router->put("/products/(\d+)", "ProductController@update");
+$router->delete("/products/(\d+)", "ProductController@delete");
 
+
+// if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'HEAD') $_SERVER['REQUEST_METHOD'] = apache_request_headers(); 
 $router->run();
+
+// echo "hello world";
