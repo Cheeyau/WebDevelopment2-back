@@ -3,6 +3,7 @@
 namespace Repository;
 
 use DateTime;
+use Exception;
 use Model\OrderDetail;
 use Model\Order;
 use PDO;
@@ -14,6 +15,8 @@ class OrderRepository extends Repository {
     
     // offset and limit by order and give user_id if not admin
     public function getAll($offset = null, $limit = null, int $user_id) {
+        if(isset($user_id)) return new Exception(("405: Unauthorized error."));
+        
         try {
             $query = "SELECT `order`.`order_id` as id, `order`.`user_id`, `order`.`name`, `order`.`email_address`, `order`.`created`, `order_detail`.`order_detail_id`, `order_detail`.`product_id`, `product`.`name` as product_name, `order_detail`.`amount`, `product`.`price` 
                 from `order`

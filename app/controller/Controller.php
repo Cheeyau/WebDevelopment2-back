@@ -17,7 +17,7 @@ class Controller {
         $this->respondWithCode($httpcode, $data);
     }
 
-    private function respondWithCode($httpcode, $data): mixed {
+    private function respondWithCode($httpcode, $data) {
         header('Content-Type: application/json; charset=utf-8');
         http_response_code($httpcode);
         echo json_encode($data);

@@ -14,15 +14,11 @@ class UserService {
     }
 
     public function checkUsernamePassword(string $name, string $password): mixed {
-        return $this->repo->checkPassword($name, $password);
-    }
-
-    public function validateToken(string $token): bool {
-        return $this->repo->checkJWT($token);
+        return $this->repo->checkUsernamePassword($name, $password);
     }
     
     public function getUser(int $user_id): mixed {
-        return $this->repo->getUser($user_id);
+        return $this->repo->getById($user_id);
     }
 
     public function create(User $user): mixed {

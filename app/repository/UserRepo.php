@@ -47,7 +47,7 @@ class UserRepository extends Repository {
         return password_verify($input, $hash);
     }
 
-    private function getById(int $id): mixed {
+    public function getById(int $id): mixed {
         try {
             $query = "SELECT * from `user` where `user`.`user_id` = :id";
             $stmt = $this->connection->prepare($query);

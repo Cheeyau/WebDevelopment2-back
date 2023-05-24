@@ -6,6 +6,7 @@ use Model\Transaction;
 use PDO;
 use PDOException;
 use DateTime;
+use Exception;
 
 class TransactionRepository extends Repository {
 
@@ -17,7 +18,7 @@ class TransactionRepository extends Repository {
             if(isset($user)) {
                 $query = "SELECT `transaction`.`transaction_id` as id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` from `transaction` left join `user` on `transaction`.`user_id` = `user`.`user_id` where `transaction`.`user_id` = :id";
             } else {
-                $query = "SELECT `transaction`.`transaction_id` as id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` from `transaction` left join `user` on `transaction`.`user_id` = `user`.`user_id`";
+                return new Exception("405 exception: unauthorized.");
             }
             
             if (isset($limit) && isset($offset)) $query .= " LIMIT :limit OFFSET :offset ";
@@ -29,7 +30,7 @@ class TransactionRepository extends Repository {
                 $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
             }
             
-            if(isset($user)) $stmt->bindParam(':id', $user, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $user, PDO::PARAM_INT);
 
             $stmt->execute();
 
@@ -47,12 +48,11 @@ class TransactionRepository extends Repository {
             if(isset($user)) {
                 $query = "SELECT `transaction`.`transaction_id` as id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` from `transaction` left join `user` on `transaction`.`user_id` = `user`.`user_id` where `transaction`.`transaction_id` = :id and `transaction`.`user_id` = :user_id";
             } else {
-                $query = "SELECT `transaction`.`transaction_id` as id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` from `transaction` left join `user` on `transaction`.`user_id` = `user`.`user_id` where `transaction`.`transaction_id` = :id";
+                return new Exception("405 exception: unauthorized.");
             }
             $stmt = $this->connection->prepare($query);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-            if(isset($user)) $stmt->bindParam(':id', $user, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $user, PDO::PARAM_INT);
 
             $stmt->execute();
 
