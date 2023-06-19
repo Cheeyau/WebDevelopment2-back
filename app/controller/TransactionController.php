@@ -2,7 +2,7 @@
 
 namespace Controllers;
 
-use Service\TransactionService;
+use Services\TransactionService;
 use Exception;
 
 class TransactionController extends Controller {
@@ -51,7 +51,7 @@ class TransactionController extends Controller {
         if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
 
         try {
-            $transaction = $this->createObjectFromPostedJson("Model\\Transaction");
+            $transaction = $this->createObjectFromPostedJson("Models\\Transaction");
             $transaction = $this->service->updateStatus($transaction, $id);
 
         } catch (Exception $e) {

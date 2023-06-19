@@ -1,12 +1,13 @@
 <?php
 
-namespace Repository;
+namespace Repositories;
 
 use DateTime;
-use Model\OrderDetail;
-use Model\Order;
+use Models\OrderDetail;
+use Models\Order;
 use PDO;
 use PDOException;
+use Repositories\Repository;
 
 class OrderRepository extends Repository {
     

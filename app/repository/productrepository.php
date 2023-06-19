@@ -1,10 +1,11 @@
 <?php
 
-namespace Repository;
+namespace Repositories;
 
-use Model\Product;
+use Models\Product;
 use PDO;
 use PDOException;
+use Repositories\Repository;
 
 class ProductRepository extends Repository {
 

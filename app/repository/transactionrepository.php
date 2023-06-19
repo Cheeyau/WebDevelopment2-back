@@ -1,11 +1,12 @@
 <?php
 
-namespace Repository;
+namespace Repositories;
 
-use Model\Transaction;
+use Models\Transaction;
 use PDO;
 use PDOException;
 use DateTime;
+use Repositories\Repository;
 
 class TransactionRepository extends Repository {
 

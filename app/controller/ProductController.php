@@ -4,7 +4,7 @@ namespace Controllers;
 
 use Exception;
 
-use Service\ProductService;
+use Services\ProductService;
 
 class ProductController extends Controller {
 

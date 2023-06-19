@@ -1,10 +1,10 @@
 <?php
 
-namespace Service;
+namespace Services;
 
-use Repository\OrderRepository;
-use Repository\UserRepository;
-use Model\Order;
+use Repositories\OrderRepository;
+use Repositories\UserRepository;
+use Models\Order;
 use Exception;
 
 class OrderService {
@@ -18,7 +18,7 @@ class OrderService {
 
     public function getAll($offset = NULL, $limit = NULL, $user_id): mixed {
         try {
-            return $this->repo->getAll($offset, $limit);
+            return $this->repo->getAll($offset, $limit, $user_id);
         } catch(Exception $e) {
             echo $e;
         }

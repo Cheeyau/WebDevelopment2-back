@@ -1,17 +1,18 @@
 <?php
 
-namespace Repository;
+namespace Repositories;
 
 use DateTime;
-use Model\User;
+use Models\User;
 use PDO;
 use PDOException;
+use Repositories\Repository;
 
 class UserRepository extends Repository {
 
     function __construct() {}
 
-    function checkUsernamePassword($username, $password)
+    public function checkUsernamePassword($username, $password)
     {
         try {
             // retrieve the user with the given username
@@ -47,7 +48,7 @@ class UserRepository extends Repository {
         return password_verify($input, $hash);
     }
 
-    private function getById(int $id): mixed {
+    public function getById(int $id): mixed {
         try {
             $query = "SELECT * from `user` where `user`.`user_id` = :id";
             $stmt = $this->connection->prepare($query);

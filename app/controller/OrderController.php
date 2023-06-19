@@ -2,7 +2,7 @@
 
 namespace Controllers;
 
-use Service\OrderService;
+use Services\OrderService;
 use Exception;
 
 class OrderController extends Controller {
@@ -16,10 +16,10 @@ class OrderController extends Controller {
     }
 
     public function getAll() : mixed {
-        if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
+        $user = $this->checkJWTToken();
 
         $paginator[] = $this->paginator();
-        $products = $this->service->getAll($paginator[0], $paginator[1]);
+        $products = $this->service->getAll($paginator[0], $paginator[1], $user->id);
 
         $this->respond($products);
     }

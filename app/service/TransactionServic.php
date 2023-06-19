@@ -1,10 +1,10 @@
 <?php
 
-namespace Service;
+namespace Services;
 
-use Model\Transaction;
-Use Repository\TransactionRepository;
-Use Repository\UserRepository;
+use Models\Transaction;
+Use Repositories\TransactionRepository;
+Use Repositories\UserRepository;
 
 class TransactionService {
     
@@ -29,6 +29,6 @@ class TransactionService {
     }
 
     public function updateStatus(Transaction $transaction, int $id): mixed {       
-        return $this->repo->update($transaction, $id);        
+        return $this->repo->updateStatus($transaction, $id);        
     }
 }

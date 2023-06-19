@@ -8,22 +8,23 @@ use \Exception;
 
 class Controller {
 
-    public function respond($data): mixed {
+    public function respond($data) {
         $this->respondWithCode(200, $data);
     }
 
-    public function respondWithError($httpcode, $message): mixed {
+    public function respondWithError($httpcode, $message) {
         $data = array('errorMessage' => $message);
         $this->respondWithCode($httpcode, $data);
     }
 
-    private function respondWithCode($httpcode, $data): mixed {
+    private function respondWithCode($httpcode, $data) {
         header('Content-Type: application/json; charset=utf-8');
         http_response_code($httpcode);
+        $data = 'hello world';
         echo json_encode($data);
     }
 
-    public function createObjectFromPostedJson($className): mixed {
+    public function createObjectFromPostedJson($className) {
         $json = file_get_contents('php://input');
         $data = json_decode($json);
 
@@ -31,14 +32,11 @@ class Controller {
         foreach ($data as $key => $value) {
             if (is_object($value)) continue;
             $object->{$key} = $value;
-
-            // $setter = "set" . ucfirst($key);
-            // $object->$setter($value);
         }
         return $object;
     }
 
-    public function checkJWTToken(): mixed {
+    public function checkJWTToken() {
         // Check for token header
         if(!isset($_SERVER['HTTP_AUTHORIZATION'])) {
            $this->respondWithError(401, "No token provided");
@@ -51,7 +49,7 @@ class Controller {
         $jwt = $arr[1];
 
         // Decode JWT
-        $secret_key = SECRET_KEY;
+        $secret_key = 'thisisasecretkey';
  
         if ($jwt) {
             try {
@@ -67,7 +65,6 @@ class Controller {
    
    public function paginator(): array {
         $items = [];
-        /// shorthanded if else statement
         $items[0] = (isset($_GET["offset"]) && is_numeric($_GET["offset"])) ? $_GET["offset"] : null;
         $items[1] = (isset($_GET["limit"]) && is_numeric($_GET["limit"])) ? $_GET["limit"] : null;
         
