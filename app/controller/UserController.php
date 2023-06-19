@@ -53,7 +53,10 @@ class UserController extends Controller {
                 "jwt" => $jwt,
                 "username" => $user->name,
                 "expireAt" => ($issuedAt + 1800)
-            );
+            ]);
+        } catch(Exception $e) {
+            return new Exception("405: Unauthorized message.");
+        }
     }
 
     public function create(): mixed {
@@ -76,9 +79,7 @@ class UserController extends Controller {
         $user = $this->service->getUser($id);
 
         // we might need some kind of error checking that returns a 404 if the product is not found in the DB
-        if (!$user) {
-            $this->respondWithError(404, "Product not found");
-        }
+        if (!$user) $this->respondWithError(404, "Product not found");
 
         $this->respond($user);
     }

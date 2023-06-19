@@ -10,11 +10,11 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $router = new \Bramus\Router\Router();
 
-$router->setNamespace('Controllers');
+$router->setNamespace('Controllers'); 
 
-$router->setBasePath("/WebDevelopment2/");
+$router->setBasePath("/WebDevelopment2");
 
-$router->post('/users/login', 'UserController@login');
+$router->post("/users/login", "UserController@login");
 
 $router->get("/orders", "OrderController@getAll");
 $router->get("/orders/(\d+)", "OrderController@getById");
@@ -32,4 +32,7 @@ $router->post("/products", "ProductController@create");
 $router->put("/products/(\d+)", "ProductController@update");
 $router->delete("/products/(\d+)", "ProductController@delete");
 
+// if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'HEAD') $_SERVER['REQUEST_METHOD'] = apache_request_headers(); 
 $router->run();
+
+// echo "hello world";
