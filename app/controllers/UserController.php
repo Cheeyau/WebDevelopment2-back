@@ -22,16 +22,20 @@ class UserController extends Controller {
         if(!$user) {
             $this->respondWithError(401, "Invalid login");
         }
+        try {
+            $tokenResponse = $this->generateJwt($user);       
+            // $tokenResponse = "$postedUser->username, $postedUser->password";       
 
-        // $tokenResponse = $this->generateJwt($user);       
-        $tokenResponse = "$postedUser->username, $postedUser->password";       
-
-        $this->respond($tokenResponse);    
+            $this->respond($tokenResponse);
+        } catch(Exception $e) {
+            return $this->respondWithError(401, $e->getMessage());
+        }
     }
 
     public function generateJwt(User $user): array {
         $secret_key = 'thisisasecretkey';
-        $domain = 'http://localhost//WebDevelopment2/';
+        // $domain = 'http://localhost:8080/WebDevelopment2/';
+        $domain = 'http://localhost';
 
         $issuedAt = time();
         $payload = array(

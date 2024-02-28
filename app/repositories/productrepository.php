@@ -14,11 +14,11 @@ class ProductRepository extends Repository {
     function getAll($offset = NULL, $limit = NULL):mixed {
         try {
             $query = "SELECT * from `product`";
-            if (isset($limit) && isset($offset)) {
+            if (!is_null($limit) && !is_null($offset)) {
                 $query .= " LIMIT :limit OFFSET :offset ";
             }
             $stmt = $this->connection->prepare($query);
-            if (isset($limit) && isset($offset)) {
+            if (!is_null($limit) && !is_null($offset)) {
                 $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
                 $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
             }
@@ -26,7 +26,8 @@ class ProductRepository extends Repository {
 
             $stmt->setFetchMode(PDO::FETCH_CLASS, "Model\Product");
 
-            return $stmt->fetchAll();
+            $products = $stmt->fetchAll();
+            return $products;
         } catch (PDOException $e) {
             echo $e;
         }

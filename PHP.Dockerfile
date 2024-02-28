@@ -12,3 +12,5 @@ RUN docker-php-ext-install gd
 RUN docker-php-ext-install pdo pdo_mysql \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug
+
+COPY ./xdebug.ini "${PHP_INI_DIR}/conf.d"

@@ -1,4 +1,6 @@
 <?php
+// xdebug_info();
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: *");
@@ -12,7 +14,7 @@ $router = new \Bramus\Router\Router();
 
 $router->setNamespace('Controllers'); 
 
-$router->setBasePath("/WebDevelopment2");
+// $router->setBasePath("/WebDevelopment2");
 
 $router->post("/users/login", "UserController@login");
 
@@ -34,5 +36,3 @@ $router->delete("/products/(\d+)", "ProductController@delete");
 
 // if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'HEAD') $_SERVER['REQUEST_METHOD'] = apache_request_headers(); 
 $router->run();
-
-// echo "hello world";
