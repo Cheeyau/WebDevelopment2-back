@@ -8,10 +8,10 @@ class Transaction {
     
     public int $id;
     public float $amount;
-    public int $user_id;
+    public int $userId;
     public string $name;
     public DateTime $created;
-    public int $order_id;
+    public int $orderId;
     public string $status;
 
 }

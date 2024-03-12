@@ -8,9 +8,9 @@ use Exception;
 
 class Order {
     public int $id;
-    public int $user_id;
+    public int $userId;
     public string $name;
-    public string $email_address;
+    public string $emailAddress;
     public DateTime $created;
     public array $items;
     

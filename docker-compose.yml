@@ -14,13 +14,16 @@ services:
         volumes:
             - ./app:/app
             - ./xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+        # works only in docker desktop
+        extra_hosts:
+            - host.docker.internal:host-gateway
     mysql:
         image: mariadb:latest
         environment:
             MYSQL_ROOT_PASSWORD: 'secret123'
+            MYSQL_DATABASE: 'developmentdb'
             MYSQL_USER: 'developer'
             MYSQL_PASSWORD: 'secret123'
-            MYSQL_DATABASE: 'developmentdb'
         volumes:
             - mysqldata:/var/lib/mysql
             - ./sql:/docker-entrypoint-initdb.d

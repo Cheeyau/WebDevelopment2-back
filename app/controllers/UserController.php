@@ -18,7 +18,7 @@ class UserController extends Controller {
     public function login() {
         $postedUser = $this->createObjectFromPostedJson("Models\\User");
         
-        $user = $this->service->checkUsernamePassword($postedUser->username, $postedUser->password);
+        $user = $this->service->checkUsernamePassword($postedUser->name, $postedUser->password);
         if(!$user) {
             $this->respondWithError(401, "Invalid login");
         }
@@ -47,7 +47,7 @@ class UserController extends Controller {
             "data" => array(
                 "id" => $user->id,
                 "name" => $user->name,
-                "user_roll" => $user->user_roll
+                "user_roll" => $user->userRoll
         ));
 
         $jwt = JWT::encode($payload, $secret_key, 'HS256');

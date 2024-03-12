@@ -14,7 +14,7 @@ class OrderRepository extends Repository {
     function __construct() {}
     
     // offset and limit by order and give user_id if not admin
-    public function getAll($offset = null, $limit = null, int $user_id) {
+    public function getAll($offset = null, $limit = null, int $userId) {
         try {
             $query = "SELECT `order`.`order_id` as id, `order`.`user_id`, `order`.`name`, `order`.`email_address`, `order`.`created`, `order_detail`.`order_detail_id`, `order_detail`.`product_id`, `product`.`name` as product_name, `order_detail`.`amount`, `product`.`price` 
                 from `order`
@@ -24,7 +24,7 @@ class OrderRepository extends Repository {
             if (isset($limit) && isset($offset)) $query .= " LIMIT :limit OFFSET :offset ";
             
             $stmt = $this->connection->prepare($query);
-            $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
             if (isset($limit) && isset($offset)) {
                 $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
                 $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
@@ -40,8 +40,8 @@ class OrderRepository extends Repository {
     private function convertToClass($stmt): array {
         $orders = [];
         while (($row = $stmt->fetch(PDO::FETCH_ASSOC)) !== false) {
-            $last_key = $orders[array_key_last($orders)];
-            if($orders[$last_key]->id !== $row['id'] || !$orders) {
+            $lastKey = $orders[array_key_last($orders)];
+            if($orders[$lastKey]->id !== $row['id'] || !$orders) {
                 $order = new Order(
                     $row['id'],
                     $row['user_id'],
@@ -52,7 +52,7 @@ class OrderRepository extends Repository {
                 );
                 $orders[] = $order;
             } else {
-                $orders[$last_key]->items[] = $this->setOrderDetail($row);
+                $orders[$lastKey]->items[] = $this->setOrderDetail($row);
             }
         }
         return $orders;
@@ -89,13 +89,13 @@ class OrderRepository extends Repository {
         try {
             $stmt = $this->connection->prepare("INSERT into `order` (user_id, name, email_address, created) values (?,?,?,?)");
 
-            $stmt->execute([$order->user_id, $order->name, $order->email_address, $order->created]);
+            $stmt->execute([$order->userId, $order->name, $order->emailAddress, $order->created]);
 
             $order->id = $this->connection->lastInsertId();
 
             $stmt = $this->connection->prepare("INSERT into `order_detail` (order_id, product_id, amount) values (?,?,?)");
             foreach($order->items as $item) {
-                $stmt->execute([$order->user_id, $order->name, $order->email_address, $order->created]);
+                $stmt->execute([$order->userId, $order->name, $order->emailAddress, $order->created]);
             }
 
             return $this->getById($order->id);
@@ -108,7 +108,7 @@ class OrderRepository extends Repository {
         try {
             $stmt = $this->connection->prepare("UPDATE `order` set `user_id` = ?, `name` = ?, `email_address` = ?, `created` = ? where `order_id` = ?");
 
-            $stmt->execute([$order->user_id, $order->name, $order->email_address, $order->created, $id]);
+            $stmt->execute([$order->userId, $order->name, $order->emailAddress, $order->created, $id]);
 
             $stmt = $this->connection->prepare("UPDATE `order_detail` set `order_id` = ?, `product_id` = ?, `amount` = ? where `order_detail_id` = ?");
 

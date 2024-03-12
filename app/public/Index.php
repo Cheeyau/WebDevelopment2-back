@@ -1,5 +1,4 @@
 <?php
-// xdebug_info();
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
@@ -34,5 +33,4 @@ $router->post("/products", "ProductController@create");
 $router->put("/products/(\d+)", "ProductController@update");
 $router->delete("/products/(\d+)", "ProductController@delete");
 
-// if(isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'HEAD') $_SERVER['REQUEST_METHOD'] = apache_request_headers(); 
 $router->run();

@@ -12,12 +12,12 @@ class UserRepository extends Repository {
 
     function __construct() {}
 
-    public function checkUsernamePassword($username, $password)
+    public function checkUsernamePassword($name, $password)
     {
         try {
             // retrieve the user with the given username
             $stmt = $this->connection->prepare("SELECT `user_id`, `name`, `user_roll` FROM user WHERE username = :username");
-            $stmt->bindParam(':username', $username);
+            $stmt->bindParam(':username', $name);
             $stmt->execute();
 
             $stmt->setFetchMode(PDO::FETCH_CLASS, 'Models\User');
@@ -64,11 +64,11 @@ class UserRepository extends Repository {
     }
 
     public function create(User $user): mixed {
-        $user->registration =  new DateTime();
+        $user->registration = date_format(new DateTime(), "Y-m-d H:i:s");
         try {
             $stmt = $this->connection->prepare("INSERT into `order` (name, email_address, password, user_roll, registration) values (?,?,?,?,?)");
 
-            $stmt->execute([$user->name, $user->email_address, $this->hashPassword($user->password), $user->user_roll, $user->registration]);
+            $stmt->execute([$user->name, $user->emailAddress, $this->hashPassword($user->password), $user->userRoll, $user->registration]);
 
             $user->id = $this->connection->lastInsertId();
 
@@ -82,7 +82,7 @@ class UserRepository extends Repository {
         try {
             $stmt = $this->connection->prepare("UPDATE `user` set `name` = ?, `email_address` = ?, `password` = ?, `user_roll` = ? where `user_id` = ?");
 
-            $stmt->execute([$user->name, $user->email_address, $user->password, $user->user_roll, $id]);
+            $stmt->execute([$user->name, $user->emailAddress, $user->password, $user->userRoll, $id]);
 
             return $this->getById($id);
         } catch (PDOException $e) {
