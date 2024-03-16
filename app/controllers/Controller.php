@@ -5,6 +5,7 @@ namespace Controllers;
 use \Firebase\JWT\JWT;
 use \Firebase\JWT\Key;
 use \Exception;
+use \Models\Paginator;
 
 class Controller {
 
@@ -53,8 +54,6 @@ class Controller {
         if ($jwt) {
             try {
                 $decoded = JWT::decode($jwt, new Key($secret_key, 'HS256'));
-                // username is now found in
-                // echo $decoded->data->username;
                 return $decoded;
             } catch (Exception $e) {
                 $this->respondWithError(401, $e->getMessage());
@@ -62,11 +61,10 @@ class Controller {
         }
    }
    
-   public function paginator(): array {
-        $items = [];
-        $items[0] = (isset($_GET["offset"]) && is_numeric($_GET["offset"])) ? $_GET["offset"] : null;
-        $items[1] = (isset($_GET["limit"]) && is_numeric($_GET["limit"])) ? $_GET["limit"] : null;
-        
-        return $items;
+    public function paginator(): Paginator {
+        $pages = $this->createObjectFromPostedJson('Models\\Paginator');
+        $pages->offset = isset($pages->offset) ? $pages->offset : 0;
+        $pages->limit = isset($pages->limit) ? $pages->limit : 5;   
+        return $pages;
    }
 }

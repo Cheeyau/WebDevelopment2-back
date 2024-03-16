@@ -8,51 +8,40 @@ use PDOException;
 use Repositories\Repository;
 
 class ProductRepository extends Repository {
-
-    function __construct() {}
-
-    function getAll($offset = NULL, $limit = NULL):mixed {
+    function getAll($pages) {
         try {
-            $query = "SELECT * from `product`";
-            if (!is_null($limit) && !is_null($offset)) {
-                $query .= " LIMIT :limit OFFSET :offset ";
-            }
-            $stmt = $this->connection->prepare($query);
-            if (!is_null($limit) && !is_null($offset)) {
-                $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-                $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-            }
-            $stmt->execute();
-
-            $stmt->setFetchMode(PDO::FETCH_CLASS, "Model\Product");
-
-            $products = $stmt->fetchAll();
-            return $products;
-        } catch (PDOException $e) {
-            echo $e;
-        }
-    }
-
-    public function getById(int $id): mixed {
-        try {
-            $query = "SELECT * from `product` where `product`.`product_id` = :id";
-            $stmt = $this->connection->prepare($query);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-
-            $stmt->setFetchMode(PDO::FETCH_CLASS, "Model\Product");
+            $stmt = $this->connection->prepare("SELECT `id`, `price`, `name`, `image`, `description` FROM `Product` ORDER BY `id` LIMIT :limit OFFSET :offset");
             
-            return $stmt->fetch();;
+            $stmt = $this->setPaginator($stmt, $pages);
+
+            $stmt->execute();
+
+            $stmt->setFetchMode(PDO::FETCH_CLASS, "Models\Product");
+
+            return $stmt->fetchAll();
         } catch (PDOException $e) {
             echo $e;
         }
     }
 
-    public function create(Product $product): mixed {
+    public function getById(int $id) {
         try {
-            $stmt = $this->connection->prepare("INSERT into `product` (`price`, `name`, `image`, `description`) values (?,?,?,?)");
+            $stmt = $this->connection->prepare("SELECT `id`, `price`, `name`, `image`, `description` FROM `Product` WHERE `Product`.`id` = ?");
+            $stmt->execute([$id]);
 
-            $stmt->execute([$product->price, $product->name, $product->image_path, $product->description]);
+            $stmt->setFetchMode(PDO::FETCH_CLASS, "Models\Product");
+            
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            echo $e;
+        }
+    }
+
+    public function create(Product $product) {
+        try {
+            $stmt = $this->connection->prepare("INSERT INTO `Product` (`price`, `name`, `image`, `description`) VALUES (?,?,?,?)");
+
+            $stmt->execute([$product->price, $product->name, $product->image, $product->description]);
 
             $product->id = $this->connection->lastInsertId();
 
@@ -62,12 +51,11 @@ class ProductRepository extends Repository {
         }
     }
 
-    
-    public function update(Product $product, int $id): mixed {
+    public function update(Product $product, int $id) {
         try {
-            $stmt = $this->connection->prepare("UPDATE `product` set `price` = ?, `name` = ?, `image` = ?, `description` = ? where `product_id` = ?");
+            $stmt = $this->connection->prepare("UPDATE `Product` SET `price` = ?, `name` = ?, `image` = ?, `description` = ? WHERE `id` = ?");
 
-            $stmt->execute([$product->price, $product->name, $product->image_path, $product->description, $id]);
+            $stmt->execute([$product->price, $product->name, $product->image, $product->description, $id]);
 
             return $this->getById($id);
         } catch (PDOException $e) {
@@ -75,11 +63,10 @@ class ProductRepository extends Repository {
         }
     }
 
-    function delete(int $id): mixed {
+    function delete(int $id) {
         try {
-            $stmt = $this->connection->prepare("DELETE from `product` where `product_id` = :id");
-            $stmt->bindParam(':id', $id);
-            $stmt->execute();
+            $stmt = $this->connection->prepare("DELETE FROM `Product` WHERE `id` = ?");
+            $stmt->execute([$id]);
         } catch (PDOException $e) {
             echo $e;
         };

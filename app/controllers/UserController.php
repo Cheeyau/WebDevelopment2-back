@@ -8,7 +8,6 @@ use Models\User;
 use Exception;
 
 class UserController extends Controller {
-
     private $service;
     
     function __construct() {
@@ -19,13 +18,10 @@ class UserController extends Controller {
         $postedUser = $this->createObjectFromPostedJson("Models\\User");
         
         $user = $this->service->checkUsernamePassword($postedUser->name, $postedUser->password);
-        if(!$user) {
-            $this->respondWithError(401, "Invalid login");
-        }
+        if(!$user) $this->respondWithError(401, "Invalid login");
         try {
             $tokenResponse = $this->generateJwt($user);       
-            // $tokenResponse = "$postedUser->username, $postedUser->password";       
-
+            
             $this->respond($tokenResponse);
         } catch(Exception $e) {
             return $this->respondWithError(401, $e->getMessage());
@@ -34,7 +30,7 @@ class UserController extends Controller {
 
     public function generateJwt(User $user): array {
         $secret_key = 'thisisasecretkey';
-        // $domain = 'http://localhost:8080/WebDevelopment2/';
+        
         $domain = 'http://localhost';
 
         $issuedAt = time();
@@ -43,11 +39,11 @@ class UserController extends Controller {
             "aud" => $domain, 
             "iat" => $issuedAt,
             "nbf" => $issuedAt, 
-            "exp" => ($issuedAt + 1800), // expiration time is set at +600 seconds (10 minutes)
+            "exp" => ($issuedAt + 1800000), // expiration time is set at +600 seconds (10 minutes)
             "data" => array(
                 "id" => $user->id,
                 "name" => $user->name,
-                "user_roll" => $user->userRoll
+                "user_roll" => $user->user_roll
         ));
 
         $jwt = JWT::encode($payload, $secret_key, 'HS256');
@@ -60,9 +56,7 @@ class UserController extends Controller {
             );
     }
 
-    public function create(): mixed {
-        if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
-
+    public function create() {
         try {
             $user = $this->createObjectFromPostedJson("Models\\User");
             $user = $this->service->create($user);
@@ -74,7 +68,7 @@ class UserController extends Controller {
         $this->respond($user);
     }
 
-    public function getById(int $id): mixed {
+    public function getById(int $id) {
         if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
 
         $user = $this->service->getUser($id);
@@ -82,6 +76,20 @@ class UserController extends Controller {
         // we might need some kind of error checking that returns a 404 if the product is not found in the DB
         if (!$user) {
             $this->respondWithError(404, "Product not found");
+        }
+
+        $this->respond($user);
+    }
+
+    public function update(int $id) {
+        if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
+
+        try {
+            $user = $this->createObjectFromPostedJson("Model\\User");
+            $user = $this->service->update($user, $id);
+
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
         }
 
         $this->respond($user);

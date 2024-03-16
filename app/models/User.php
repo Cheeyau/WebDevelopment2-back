@@ -7,7 +7,7 @@ class User {
     public int $id;
     public string $name;
     public string $password;
-    public string $emailAddress;
-    public int $userRoll;
+    public string $email_address;
+    public int $user_roll;
     public string $registration;
 }

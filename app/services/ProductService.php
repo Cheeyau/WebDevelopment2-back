@@ -12,23 +12,23 @@ class ProductService {
         $this->repo = new ProductRepository();
     }
 
-    public function getAll($offset = NULL, $limit = NULL): mixed {
-        return $this->repo->getAll($offset, $limit);
+    public function getAll($pages) {
+        return $this->repo->getAll($pages);
     }
 
-    public function getById(int $id): mixed {
+    public function getById(int $id) {
         return $this->repo->getById($id);
     }
 
-    public function create(Product $product): mixed {       
+    public function create(Product $product) {       
         return $this->repo->create($product);        
     }
 
-    public function update(Product $product, int $id): mixed {       
+    public function update(Product $product, int $id) {       
         return $this->repo->update($product, $id);        
     }
 
-    public function delete(int $id):mixed {       
+    public function delete(int $id) {       
         return $this->repo->delete($id);        
     }
 }

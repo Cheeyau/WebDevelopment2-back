@@ -10,10 +10,8 @@ use PDOException;
 use Repositories\Repository;
 
 class OrderRepository extends Repository {
-    
-    function __construct() {}
-    
     // offset and limit by order and give user_id if not admin
+    
     public function getAll($offset = null, $limit = null, int $userId) {
         try {
             $query = "SELECT `order`.`order_id` as id, `order`.`user_id`, `order`.`name`, `order`.`email_address`, `order`.`created`, `order_detail`.`order_detail_id`, `order_detail`.`product_id`, `product`.`name` as product_name, `order_detail`.`amount`, `product`.`price` 
@@ -60,7 +58,7 @@ class OrderRepository extends Repository {
 
     private function setOrderDetail($row): OrderDetail {
         return new OrderDetail(
-            $row['order_detail_id'],
+            $row['id'],
             $row['product_id'],
             $row['product_name'],
             $row['amount'],

@@ -28,7 +28,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `Jwt_token` (
-  `jwt_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `token` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -39,7 +39,7 @@ CREATE TABLE `Jwt_token` (
 --
 
 CREATE TABLE `Order` (
-  `order_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `email_address` varchar(255) NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE `Order` (
 -- Dumping data for table `Order`
 --
 
-INSERT INTO `Order` (`order_id`, `user_id`, `name`, `email_address`, `created`) VALUES
+INSERT INTO `Order` (`id`, `user_id`, `name`, `email_address`, `created`) VALUES
 (1, 1, 'Bob', 'bob@mail.com', '2021-03-20 15:05:00'),
 (2, 1, 'Bob', 'bob@mail.com', '2021-03-21 15:05:00'),
 (3, 2, 'James', 'james@mail.com', '2021-03-21 15:05:00');
@@ -62,7 +62,7 @@ INSERT INTO `Order` (`order_id`, `user_id`, `name`, `email_address`, `created`) 
 --
 
 CREATE TABLE `Order_detail` (
-  `order_detail_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `order_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `amount` int(11) NOT NULL
@@ -72,7 +72,7 @@ CREATE TABLE `Order_detail` (
 -- Dumping data for table `Order_detail`
 --
 
-INSERT INTO `Order_detail` (`order_detail_id`, `order_id`, `product_id`, `amount`) VALUES
+INSERT INTO `Order_detail` (`id`, `order_id`, `product_id`, `amount`) VALUES
 (1, 1, 1, 2),
 (2, 1, 3, 1),
 (3, 1, 4, 2),
@@ -88,7 +88,7 @@ INSERT INTO `Order_detail` (`order_detail_id`, `order_id`, `product_id`, `amount
 --
 
 CREATE TABLE `Product` (
-  `product_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `price` float NOT NULL,
   `name` varchar(255) NOT NULL,
   `image` varchar(255) DEFAULT NULL,
@@ -99,7 +99,7 @@ CREATE TABLE `Product` (
 -- Dumping data for table `Product`
 --
 
-INSERT INTO `Product` (`product_id`, `price`, `name`, `image`, `description`) VALUES
+INSERT INTO `Product` (`id`, `price`, `name`, `image`, `description`) VALUES
 (1, 30, 'Zadel', 'leren-zadel', 'Heb je ook wel eens last van schurende benen of een harde zit na een lange rit? Zit je zadel weer vol water of ben je constant aan het zweten? Daar heeft Deso het Comfortabel Gel Fietszadel op bedacht! Hiermee ben je verzekerd van een lekkere zachte en brede zit. Bij dit model draait het allemaal om comfortabel fietsen, daarom kun jij met dit zadel voortaan altijd de fiets pakken!'),
 (2, 200, 'Oma fiets', 'grote-oma-fiets', 'Deze prachtige 28 inch omafiets heeft een framemaat van 57 cm. Het stuur en de zadel zijn in hoogte verstelbaar. De fiets is voorzien van dubbelwandige aluminium velgen, een bagagedrager en een terugtraprem. De kettingkast is gesloten met een lakdoek. Inclusief jasbeschermers, zijstandaard en bel. De fiets is voorzien van LED-verlichting (d.m.v. batterij). '),
 (3, 40, 'Fiets stuur groot', 'fiets-stuur-klein', 'Zeer comfortabel trekking stuur met een 25,4 mm stuurpenklemdiameter. Specificaties: Stuurklem diameter: 25,4 mm Breedte: 550 mm Dikte: 1,5 mm Handvatlengte: 140 mm Verhoging: 72 mm Terugliggend: 68° Materiaal: Staal Veiligheidslevel: 3 Gewicht: 615 gram '),
@@ -113,7 +113,7 @@ INSERT INTO `Product` (`product_id`, `price`, `name`, `image`, `description`) VA
 --
 
 CREATE TABLE `Transaction` (
-  `transaction_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `amount` float NOT NULL,
   `user_id` int(11) NOT NULL,
   `created` datetime NOT NULL,
@@ -125,7 +125,7 @@ CREATE TABLE `Transaction` (
 -- Dumping data for table `Transaction`
 --
 
-INSERT INTO `Transaction` (`transaction_id`, `amount`, `user_id`, `created`, `order_id`, `status`) VALUES
+INSERT INTO `Transaction` (`id`, `amount`, `user_id`, `created`, `order_id`, `status`) VALUES
 (1, 130, 1, '2021-03-20 15:05:00', 1, 'completed'),
 (2, 400, 1, '2021-03-21 15:05:00', 2, 'refunded'),
 (3, 680, 2, '2021-03-20 15:05:00', 3, 'pending');
@@ -137,7 +137,7 @@ INSERT INTO `Transaction` (`transaction_id`, `amount`, `user_id`, `created`, `or
 --
 
 CREATE TABLE `User` (
-  `user_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `email_address` varchar(255) NOT NULL,
   `password` char(128) NOT NULL,
@@ -149,7 +149,7 @@ CREATE TABLE `User` (
 -- Dumping data for table `User`
 --
 
-INSERT INTO `User` (`user_id`, `name`, `email_address`, `password`, `user_roll`, `registration`) VALUES
+INSERT INTO `User` (`id`, `name`, `email_address`, `password`, `user_roll`, `registration`) VALUES
 (1, 'Bob', 'bob@mail.com', 'a87d39824d58b1e934e2a7d8d06931948fc0d0f37194ef90908477d864ba6eee8f27d8f3c49097108f1d59bc68e1e7acd8a21f2224cbb6c2df9ed1d68c00e076', 1, '2021-03-20 15:00:00'),
 (2, 'James', 'james@mail.com', '150ecd566852903d94357fe24fc782add2b8a9b8342d1e87ea18c9d818187d4c8cf08c33d8fe53539291a7786c86f8a65840a723140fac6dde7514b9deade1ea', 2, '2021-04-20 15:00:00');
 
@@ -161,37 +161,37 @@ INSERT INTO `User` (`user_id`, `name`, `email_address`, `password`, `user_roll`,
 -- Indexes for table `Jwt_token`
 --
 ALTER TABLE `Jwt_token`
-  ADD PRIMARY KEY (`jwt_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `Order`
 --
 ALTER TABLE `Order`
-  ADD PRIMARY KEY (`order_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `Order_detail`
 --
 ALTER TABLE `Order_detail`
-  ADD PRIMARY KEY (`order_detail_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `Product`
 --
 ALTER TABLE `Product`
-  ADD PRIMARY KEY (`product_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `Transaction`
 --
 ALTER TABLE `Transaction`
-  ADD PRIMARY KEY (`transaction_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `User`
 --
 ALTER TABLE `User`
-  ADD PRIMARY KEY (`user_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -201,37 +201,37 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Jwt_token`
 --
 ALTER TABLE `Jwt_token`
-  MODIFY `jwt_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `Order`
 --
 ALTER TABLE `Order`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `Order_detail`
 --
 ALTER TABLE `Order_detail`
-  MODIFY `order_detail_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `Product`
 --
 ALTER TABLE `Product`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `Transaction`
 --
 ALTER TABLE `Transaction`
-  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `User`
 --
 ALTER TABLE `User`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

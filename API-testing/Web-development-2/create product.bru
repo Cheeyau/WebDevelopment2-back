@@ -1,0 +1,20 @@
+meta {
+  name: create product
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost/products
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "price": 9999,
+    "name": "Bak fiets",
+    "description": "De Lovens Explorer 50 bakfiets is ideaal voor het gezin en dagelijks woon-werkverkeer op vlak terrein. De motor en het schakelsysteem zijn zo ontworpen dat ze ideale ondersteuning bieden. De EPP-bak en een geavanceerde kooiconstructie zorgen voor de perfecte bescherming van de spullen en/of kinderen die je vervoert. Geïntegreerde kabelbesturing en een verende voorvork zorgen ervoor dat je comfortabel van A naar B komt.",
+    "image": "bak-fiets"
+  }
+}

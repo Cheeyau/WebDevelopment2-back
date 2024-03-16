@@ -13,9 +13,9 @@ $router = new \Bramus\Router\Router();
 
 $router->setNamespace('Controllers'); 
 
-// $router->setBasePath("/WebDevelopment2");
-
 $router->post("/users/login", "UserController@login");
+$router->post("/users", "UserController@create");
+$router->get("/users/(\d+)", "OrderController@getById");
 
 $router->get("/orders", "OrderController@getAll");
 $router->get("/orders/(\d+)", "OrderController@getById");

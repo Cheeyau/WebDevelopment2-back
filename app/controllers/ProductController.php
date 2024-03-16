@@ -14,16 +14,15 @@ class ProductController extends Controller {
 
     }
 
-    public function getAll(): mixed {
-        $products = $this->service->getAll($this->paginator()[0], $this->paginator()[1]);
+    public function getAll() {
+        $products = $this->service->getAll($this->paginator());
 
         $this->respond($products);
     }
 
-    public function getById($id): mixed {
+    public function getById($id) {
         $product = $this->service->getById($id);
 
-        // we might need some kind of error checking that returns a 404 if the product is not found in the DB
         if (!$product) {
             $this->respondWithError(404, "Product not found");
         }
@@ -31,13 +30,12 @@ class ProductController extends Controller {
         $this->respond($product);
     }
 
-    public function create(): mixed {
+    public function create() {
         if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
 
         try {
-            $product = $this->createObjectFromPostedJson("Model\\Product");
-            $product = $this->service->create($product);
-
+            $product = $this->createObjectFromPostedJson("Models\\Product");
+            $this->service->create($product);
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
         }
@@ -45,11 +43,11 @@ class ProductController extends Controller {
         $this->respond($product);
     }
 
-    public function update($id): mixed {
+    public function update($id) {
         if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
 
         try {
-            $product = $this->createObjectFromPostedJson("Model\\Product");
+            $product = $this->createObjectFromPostedJson("Models\\Product");
             $product = $this->service->update($product, $id);
 
         } catch (Exception $e) {
@@ -59,7 +57,7 @@ class ProductController extends Controller {
         $this->respond($product);
     }
 
-    public function delete($id): mixed {
+    public function delete($id) {
         if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
 
         try {

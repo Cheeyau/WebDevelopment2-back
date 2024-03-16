@@ -6,6 +6,13 @@ meta {
 
 get {
   url: http://localhost/products
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "limit": 5,
+    "offset": 0
+  }
 }

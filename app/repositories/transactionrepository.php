@@ -2,6 +2,7 @@
 
 namespace Repositories;
 
+use Models\Paginator;
 use Models\Transaction;
 use PDO;
 use PDOException;
@@ -10,31 +11,24 @@ use Repositories\Repository;
 
 class TransactionRepository extends Repository {
 
-    function __construct() {}
-
     // give user_id if not admin
-    function getAll($offset = NULL, $limit = NULL, int $user = null):mixed {
+    function getAll(Paginator $pages, int $user):mixed {
         try {
             if(isset($user)) {
-                $query = "SELECT `transaction`.`transaction_id` as id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` from `transaction` left join `user` on `transaction`.`user_id` = `user`.`user_id` where `transaction`.`user_id` = :id";
+                $query = "SELECT `transaction`.`id` AS id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` FROM `transaction` LEFT JOIN `user` ON `transaction`.`user_id` = `user`.`user_id` WHERE `transaction`.`user_id` = :id  LIMIT :limit OFFSET :offset";
             } else {
-                $query = "SELECT `transaction`.`transaction_id` as id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` from `transaction` left join `user` on `transaction`.`user_id` = `user`.`user_id`";
+                $query = "SELECT `transaction`.`id` AS id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` FROM `transaction` LEFT JOIN `user` ON `transaction`.`user_id` = `user`.`user_id` LIMIT :limit OFFSET :offset";
             }
-            
-            if (isset($limit) && isset($offset)) $query .= " LIMIT :limit OFFSET :offset ";
             
             $stmt = $this->connection->prepare($query);
             
-            if (isset($limit) && isset($offset)) {
-                $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-                $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-            }
+            $stmt = $this->setPaginator($stmt, $pages);
             
             if(isset($user)) $stmt->bindParam(':id', $user, PDO::PARAM_INT);
 
             $stmt->execute();
 
-            $stmt->setFetchMode(PDO::FETCH_CLASS, "Model\Transaction");
+            $stmt->setFetchMode(PDO::FETCH_CLASS, "Models\Transaction");
 
             return $stmt->fetchAll();
         } catch (PDOException $e) {
@@ -46,9 +40,9 @@ class TransactionRepository extends Repository {
     public function getById(int $id, int $user = null): mixed {
         try {
             if(isset($user)) {
-                $query = "SELECT `transaction`.`transaction_id` as id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` from `transaction` left join `user` on `transaction`.`user_id` = `user`.`user_id` where `transaction`.`transaction_id` = :id and `transaction`.`user_id` = :user_id";
+                $query = "SELECT `transaction`.`id` AS id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` FROM `transaction` LEFT JOIN `user` ON `transaction`.`user_id` = `user`.`user_id` WHERE `transaction`.`id` = :id AND `transaction`.`user_id` = :user_id";
             } else {
-                $query = "SELECT `transaction`.`transaction_id` as id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` from `transaction` left join `user` on `transaction`.`user_id` = `user`.`user_id` where `transaction`.`transaction_id` = :id";
+                $query = "SELECT `transaction`.`id` AS id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` FROM `transaction` LEFT JOIN `user` ON `transaction`.`user_id` = `user`.`user_id` WHERE `transaction`.`id` = :id";
             }
             $stmt = $this->connection->prepare($query);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -57,7 +51,7 @@ class TransactionRepository extends Repository {
 
             $stmt->execute();
 
-            $stmt->setFetchMode(PDO::FETCH_CLASS, "Model\Transaction");
+            $stmt->setFetchMode(PDO::FETCH_CLASS, "Models\Transaction");
             
             return $stmt->fetch();
         } catch (PDOException $e) {
@@ -70,7 +64,7 @@ class TransactionRepository extends Repository {
         try {
             $stmt = $this->connection->prepare("INSERT into transaction () values (?,?,?,?)");
 
-            $stmt->execute([$transaction->amount, $transaction->user_id, $transaction->created, $transaction->order_id, $transaction->status]);
+            $stmt->execute([$transaction->amount, $transaction->id, $transaction->created, $transaction->order_id, $transaction->status]);
 
             $transaction->id = $this->connection->lastInsertId();
 
