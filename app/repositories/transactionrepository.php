@@ -31,7 +31,7 @@ class TransactionRepository extends Repository {
             $stmt->setFetchMode(PDO::FETCH_CLASS, "Models\Transaction");
 
             return $stmt->fetchAll();
-        } catch (PDOException $e) {
+        } catch (PDOException $e) {ad
             echo $e;
         }
     }
