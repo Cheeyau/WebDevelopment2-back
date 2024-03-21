@@ -12,7 +12,7 @@ use Repositories\Repository;
 class TransactionRepository extends Repository {
 
     // give user_id if not admin
-    function getAll(Paginator $pages, int $user):mixed {
+    function getAll(Paginator $pages, int $user) {
         try {
             if(isset($user)) {
                 $query = "SELECT `transaction`.`id` AS id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` FROM `transaction` LEFT JOIN `user` ON `transaction`.`user_id` = `user`.`user_id` WHERE `transaction`.`user_id` = :id  LIMIT :limit OFFSET :offset";
@@ -31,13 +31,13 @@ class TransactionRepository extends Repository {
             $stmt->setFetchMode(PDO::FETCH_CLASS, "Models\Transaction");
 
             return $stmt->fetchAll();
-        } catch (PDOException $e) {ad
+        } catch (PDOException $e) {
             echo $e;
         }
     }
 
     // give user_id if not admin
-    public function getById(int $id, int $user = null): mixed {
+    public function getById(int $id, int $user = null) {
         try {
             if(isset($user)) {
                 $query = "SELECT `transaction`.`id` AS id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` FROM `transaction` LEFT JOIN `user` ON `transaction`.`user_id` = `user`.`user_id` WHERE `transaction`.`id` = :id AND `transaction`.`user_id` = :user_id";
@@ -59,7 +59,7 @@ class TransactionRepository extends Repository {
         }
     }
 
-    public function create(Transaction $transaction): mixed {
+    public function create(Transaction $transaction) {
         $transaction->created = new DateTime();
         try {
             $stmt = $this->connection->prepare("INSERT into transaction () values (?,?,?,?)");
@@ -75,7 +75,7 @@ class TransactionRepository extends Repository {
     }
 
 
-    public function updateStatus(Transaction $transaction, int $id): mixed {
+    public function updateStatus(Transaction $transaction, int $id) {
         try {
             $stmt = $this->connection->prepare("UPDATE `transaction` set `status` = ? where `transaction_id` = ?");
 

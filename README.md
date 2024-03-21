@@ -15,3 +15,8 @@ Or run:
 ```sh
 docker-compose down
 ```
+
+rebuild 
+```sh
+docker-compose up --build --force-recreate --no-deps 
+```
