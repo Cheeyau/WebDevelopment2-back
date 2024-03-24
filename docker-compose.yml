@@ -14,7 +14,7 @@ services:
         volumes:
             - ./app:/app
             - ./xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-        # works only in docker desktop
+        # works only in docker
         extra_hosts:
             - host.docker.internal:host-gateway
     mysql:
