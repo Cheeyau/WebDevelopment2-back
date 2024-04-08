@@ -67,7 +67,7 @@ class OrderRepository extends Repository {
     }
 
     // give user_id if not admin
-    public function getById(int $id, ): mixed {
+    public function getById(int $id, ) {
         try {
             $query = "SELECT `order`.`order_id` as id, `order`.`user_id`, `order`.`name`, `order`.`email_address`, `order`.`created`, `order_detail`.`order_detail_id`, `order_detail`.`product_id`, `product`.`name` as product_name, `order_detail`.`amount`, `product`.`price` from `order` left join `order_detail` on `order`.`order_id` = `order_detail`.`order_id` left join `product` on `product`.`product_id` = `order_detail`.`product_id` where `order`.`order_id` = :id";
 
@@ -81,7 +81,7 @@ class OrderRepository extends Repository {
         }
     }
 
-    public function create(Order $order): mixed {
+    public function create(Order $order){
         $order->created = new DateTime();
 
         try {
@@ -102,7 +102,7 @@ class OrderRepository extends Repository {
         }
     }
 
-    public function update(Order $order, int $id): mixed {
+    public function update(Order $order, int $id) {
         try {
             $stmt = $this->connection->prepare("UPDATE `order` set `user_id` = ?, `name` = ?, `email_address` = ?, `created` = ? where `order_id` = ?");
 
