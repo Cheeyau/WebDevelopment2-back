@@ -16,7 +16,7 @@ class OrderService {
         $this->repo = new OrderRepository();
     }
 
-    public function getAll($offset = NULL, $limit = NULL, $user_id): mixed {
+    public function getAll($offset = NULL, $limit = NULL, $user_id) {
         try {
             return $this->repo->getAll($offset, $limit, $user_id);
         } catch(Exception $e) {
@@ -24,15 +24,15 @@ class OrderService {
         }
     }
 
-    public function getById(int $id): mixed {
+    public function getById(int $id) {
         return $this->repo->getById($id);
     }
 
-    public function create(Order $order): mixed {       
+    public function create(Order $order) {       
         return $this->repo->create($order);        
     }
 
-    public function update(Order $order, int $id): mixed {       
+    public function update(Order $order, int $id) {       
         return $this->repo->update($order, $id);        
     }
 }

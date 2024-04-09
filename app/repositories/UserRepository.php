@@ -15,10 +15,10 @@ class UserRepository extends Repository {
         try {
             // retrieve the user with the given username
             $user = $this->getByName($name);
+            if (!$user) return false;
 
             // verify if the password matches the hash in the database
             $result = $this->verifyPassword($password, $user->password);
-
             if (!$result) return false;
 
             // do not pass the password hash to the caller
@@ -48,8 +48,8 @@ class UserRepository extends Repository {
     }
 
     // verify the password hash
-    private function verifyPassword($input, $hash): bool {
-        return password_verify($input, $hash);
+    private function verifyPassword($password, $hash): bool {
+        return password_verify($password, $hash);
     }
 
     public function getById(int $id) {

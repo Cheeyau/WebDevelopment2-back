@@ -150,8 +150,8 @@ CREATE TABLE `User` (
 --
 
 INSERT INTO `User` (`id`, `name`, `email_address`, `password`, `user_roll`, `registration`) VALUES
-(1, 'Bob', 'bob@mail.com', 'a87d39824d58b1e934e2a7d8d06931948fc0d0f37194ef90908477d864ba6eee8f27d8f3c49097108f1d59bc68e1e7acd8a21f2224cbb6c2df9ed1d68c00e076', 1, '2021-03-20 15:00:00'),
-(2, 'James', 'james@mail.com', '150ecd566852903d94357fe24fc782add2b8a9b8342d1e87ea18c9d818187d4c8cf08c33d8fe53539291a7786c86f8a65840a723140fac6dde7514b9deade1ea', 2, '2021-04-20 15:00:00');
+(1, 'Bob', 'bob@mail.com', '$2y$10$Zmo87y9iVspKhB7uUgjfhOLZvZ0HEeG3VzHNNKwpPcqrOTlgbQdgu', 1, '2021-03-20 15:00:00'),
+(2, 'James', 'james@mail.com', '$2y$10$Zmo87y9iVspKhB7uUgjfhOLZvZ0HEeG3VzHNNKwpPcqrOTlgbQdgu', 2, '2021-04-20 15:00:00');
 
 --
 -- Indexes for dumped tables

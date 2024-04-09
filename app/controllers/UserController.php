@@ -18,7 +18,7 @@ class UserController extends Controller {
         $postedUser = $this->createObjectFromPostedJson("Models\\User");
         
         $user = $this->service->checkUsernamePassword($postedUser->name, $postedUser->password);
-        if(!$user) $this->respondWithError(401, "Invalid login");
+        if(!$user) return $this->respondWithError(401, "Invalid login");
         try {
             $tokenResponse = $this->generateJwt($user);       
             

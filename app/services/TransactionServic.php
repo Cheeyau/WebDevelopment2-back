@@ -19,16 +19,16 @@ class TransactionService {
         return $this->repo->getAll($offset, $limit);
     }
 
-    public function getById(int $id): mixed {
+    public function getById(int $id) {
         return $this->repo->getById($id);
     }
 
     // TODO check user id 
-    public function create(Transaction $transaction): mixed {       
+    public function create(Transaction $transaction) {       
         return $this->repo->create($transaction);        
     }
 
-    public function updateStatus(Transaction $transaction, int $id): mixed {       
+    public function updateStatus(Transaction $transaction, int $id) {       
         return $this->repo->updateStatus($transaction, $id);        
     }
 }
