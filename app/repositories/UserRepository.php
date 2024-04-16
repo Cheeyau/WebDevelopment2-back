@@ -60,7 +60,7 @@ class UserRepository extends Repository {
 
             $stmt->setFetchMode(PDO::FETCH_CLASS, "Models\User");
             
-            return $stmt->fetch();;
+            return $stmt->fetch();
         } catch (PDOException $e) {
             echo $e;
         }
@@ -88,6 +88,19 @@ class UserRepository extends Repository {
             $stmt->execute([$user->name, $user->email_address, $user->password, $user->user_roll, $id]);
 
             return $this->getById($id);
+        } catch (PDOException $e) {
+            echo $e;
+        }
+    }
+    function getAll() {
+        try {
+            $stmt = $this->connection->prepare("SELECT `id`, `name`, `email_address`, `registration` FROM `User`");
+            
+            $stmt->execute();
+
+            $stmt->setFetchMode(PDO::FETCH_CLASS, "Models\User");
+
+            return $stmt->fetchAll();
         } catch (PDOException $e) {
             echo $e;
         }

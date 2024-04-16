@@ -21,6 +21,10 @@ class UserService {
         return $this->repo->getById($user_id);
     }
 
+    public function getAll() {
+        return $this->repo->getAll();
+    }
+
     public function create(User $user) {
         return $this->repo->create($user);
     }

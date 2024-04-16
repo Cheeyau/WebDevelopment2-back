@@ -69,20 +69,19 @@ class UserController extends Controller {
     }
 
     public function getById(int $id) {
-        if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
+        $this->checkJWTToken();
 
         $user = $this->service->getUser($id);
 
-        // we might need some kind of error checking that returns a 404 if the product is not found in the DB
         if (!$user) {
-            $this->respondWithError(404, "Product not found");
+            $this->respondWithError(404, "User not found");
         }
 
         $this->respond($user);
     }
 
     public function update(int $id) {
-        if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
+        $this->checkJWTToken();
 
         try {
             $user = $this->createObjectFromPostedJson("Model\\User");
@@ -93,5 +92,14 @@ class UserController extends Controller {
         }
 
         $this->respond($user);
+    }
+
+    public function getAll() {
+        $this->checkJWTToken();
+        try {   
+            $this->respond($this->service->getAll());
+        } catch (Exception $e) { 
+            $this->respondWithError(500, $e->getMessage());
+        }
     }
 }

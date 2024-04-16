@@ -15,7 +15,8 @@ $router->setNamespace('Controllers');
 
 $router->post("/users/login", "UserController@login");
 $router->post("/users", "UserController@create");
-$router->get("/users/(\d+)", "OrderController@getById");
+$router->get("/users/(\d+)", "UserController@getById");
+$router->get("/users", "UserController@getAll");
 
 $router->get("/orders", "OrderController@getAll");
 $router->get("/orders/(\d+)", "OrderController@getById");

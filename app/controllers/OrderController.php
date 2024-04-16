@@ -15,7 +15,7 @@ class OrderController extends Controller {
 
     }
 
-    public function getAll() : mixed {
+    public function getAll() {
         $user = $this->checkJWTToken();
 
         $paginator[] = $this->paginator();
