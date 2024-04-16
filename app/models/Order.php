@@ -25,4 +25,13 @@ class Order {
     //         return $e;
     //     }
     // }
+
+    public function __construct(int $id, int $user_id, string $name, string $email_address, DateTime $created, array $items) {
+        $this->id = $id;
+        $this->user_id = $user_id;
+        $this->name = $name;
+        $this->email_address = $email_address;
+        $this->created = $created;
+        $this->items = $items;
+    }
 }

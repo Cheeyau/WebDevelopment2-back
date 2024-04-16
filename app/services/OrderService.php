@@ -3,8 +3,8 @@
 namespace Services;
 
 use Repositories\OrderRepository;
-use Repositories\UserRepository;
 use Models\Order;
+use Models\Paginator;
 use Exception;
 
 class OrderService {
@@ -12,13 +12,12 @@ class OrderService {
     private $user_repo;
     private $repo;
     function __construct() {
-        $this->user_repo = new UserRepository();
         $this->repo = new OrderRepository();
     }
 
-    public function getAll($offset = NULL, $limit = NULL, $user_id) {
+    public function getAll(Paginator $paginator, $user_id) {
         try {
-            return $this->repo->getAll($offset, $limit, $user_id);
+            return $this->repo->getAll($paginator, $user_id);
         } catch(Exception $e) {
             echo $e;
         }

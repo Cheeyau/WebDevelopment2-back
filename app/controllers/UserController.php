@@ -18,7 +18,8 @@ class UserController extends Controller {
         $postedUser = $this->createObjectFromPostedJson("Models\\User");
         
         $user = $this->service->checkUsernamePassword($postedUser->name, $postedUser->password);
-        if(!$user) return $this->respondWithError(401, "Invalid login");
+        if (is_null($user)) return $this->respondWithError(404, "User not found.");
+        if(!$user) return $this->respondWithError(401, "Invalid login.");
         try {
             $tokenResponse = $this->generateJwt($user);       
             
@@ -52,7 +53,7 @@ class UserController extends Controller {
                 "message" => "Successful login.",
                 "jwt" => $jwt,
                 "username" => $user->name,
-                "expireAt" => ($issuedAt + 1800)
+                "expireAt" => ($issuedAt + 1800000)
             );
     }
 
@@ -69,37 +70,46 @@ class UserController extends Controller {
     }
 
     public function getById(int $id) {
-        $this->checkJWTToken();
-
-        $user = $this->service->getUser($id);
-
-        if (!$user) {
-            $this->respondWithError(404, "User not found");
+        if ($this->checkJWTToken()) {
+            $user = $this->service->getUser($id);
+    
+            if (!$user) {
+                $this->respondWithError(404, "User not found");
+            }
+    
+            $this->respond($user);
+        } else {
+            $this->respondWithError(401, $this->jwt_not_found);
         }
 
-        $this->respond($user);
     }
 
     public function update(int $id) {
-        $this->checkJWTToken();
-
-        try {
-            $user = $this->createObjectFromPostedJson("Model\\User");
-            $user = $this->service->update($user, $id);
-
-        } catch (Exception $e) {
-            $this->respondWithError(500, $e->getMessage());
+        if ($this->checkJWTToken()) {
+            try {
+                $user = $this->createObjectFromPostedJson("Model\\User");
+                $user = $this->service->update($user, $id);
+    
+            } catch (Exception $e) {
+                $this->respondWithError(500, $e->getMessage());
+            }
+    
+            $this->respond($user);
+        } else {
+            $this->respondWithError(401, $this->jwt_not_found);
         }
 
-        $this->respond($user);
     }
 
     public function getAll() {
-        $this->checkJWTToken();
-        try {   
-            $this->respond($this->service->getAll());
-        } catch (Exception $e) { 
-            $this->respondWithError(500, $e->getMessage());
+        if ($this->checkJWTToken()) {
+            try {   
+                $this->respond($this->service->getAll());
+            } catch (Exception $e) { 
+                $this->respondWithError(500, $e->getMessage());
+            }
+        } else {
+            $this->respondWithError(401, $this->jwt_not_found);
         }
     }
 }

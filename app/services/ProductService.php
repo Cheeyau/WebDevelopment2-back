@@ -2,6 +2,7 @@
 
 namespace Services;
 
+use Models\Paginator;
 use Repositories\ProductRepository;
 use Models\Product;
 
@@ -12,7 +13,7 @@ class ProductService {
         $this->repo = new ProductRepository();
     }
 
-    public function getAll($pages) {
+    public function getAll(Paginator $pages) {
         return $this->repo->getAll($pages);
     }
 

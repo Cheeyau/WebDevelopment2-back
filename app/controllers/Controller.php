@@ -6,8 +6,11 @@ use \Firebase\JWT\JWT;
 use \Firebase\JWT\Key;
 use \Exception;
 use \Models\Paginator;
+use \Models\JWTToken;
 
 class Controller {
+    
+    public string $jwt_not_found = 'JWT token was not provided or readable, please login again.';
 
     function respond($data) {
         $this->respondWithCode(200, $data);
@@ -27,11 +30,13 @@ class Controller {
     public function createObjectFromPostedJson($className) {
         $json = file_get_contents('php://input');
         $data = json_decode($json);
-
+        
         $object = new $className();
-        foreach ($data as $key => $value) {
-            if (is_object($value)) continue;
-            $object->{$key} = $value;
+        if (!is_null($data)) {
+            foreach ($data as $key => $value) {
+                if (is_object($value)) continue;
+                $object->{$key} = $value;
+            }
         }
         return $object;
     }
@@ -46,15 +51,19 @@ class Controller {
         $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
         // Strip the part "Bearer " from the header
         $arr = explode(" ", $authHeader);
+        
+        if (!isset($arr[1])) {  
+            return null;
+        } 
         $jwt = $arr[1];
 
         // Decode JWT
         $secret_key = 'thisisasecretkey';
- 
+
         if ($jwt) {
             try {
                 $decoded = JWT::decode($jwt, new Key($secret_key, 'HS256'));
-                return $decoded;
+                return new JWTToken($decoded);
             } catch (Exception $e) {
                 $this->respondWithError(401, $e->getMessage());
             }

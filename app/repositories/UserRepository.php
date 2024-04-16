@@ -15,7 +15,7 @@ class UserRepository extends Repository {
         try {
             // retrieve the user with the given username
             $user = $this->getByName($name);
-            if (!$user) return false;
+            if (!$user) return null;
 
             // verify if the password matches the hash in the database
             $result = $this->verifyPassword($password, $user->password);
@@ -74,8 +74,13 @@ class UserRepository extends Repository {
             $stmt->execute([$user->name, $user->email_address, $this->hashPassword($user->password), $user->user_roll, $user->registration]);
 
             $user->id = $this->connection->lastInsertId();
-
-            return $this->getById($user->id);
+            
+            $user = $this->getById($user->id);
+            
+            unset($user->password);
+            unset($user->user_roll);
+            
+            return $user;
         } catch (PDOException $e) {
             echo $e;
         }        

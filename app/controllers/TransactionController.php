@@ -13,51 +13,62 @@ class TransactionController extends Controller {
         $this->service = new TransactionService();  
     }
 
-    public function getAll(): mixed {
-        if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
-
-        $transactions = $this->service->getAll($this->paginator()[0], $this->paginator()[1]);
-
-        $this->respond($transactions);
-    }
-
-    public function getById($id): mixed {
-        if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
-
-        $transaction = $this->service->getById($id);
-
-        if (!$transaction) {
-            $this->respondWithError(404, "transaction not found");
+    public function getAll() {
+        if ($this->checkJWTToken()) {
+            $transactions = $this->service->getAll($this->paginator());
+    
+            $this->respond($transactions);
+        } else {
+            $this->respondWithError(404, $this->jwt_not_found);
         }
 
-        $this->respond($transaction);
     }
 
-    public function create(): mixed {
-        if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
-
-        try {
-            $transaction = $this->createObjectFromPostedJson("Models\\Transaction");
-            $transaction = $this->service->create($transaction);
-
-        } catch (Exception $e) {
-            $this->respondWithError(500, $e->getMessage());
+    public function getById($id) {
+        if ($this->checkJWTToken()) {
+            $transaction = $this->service->getById($id);
+    
+            if (!$transaction) {
+                $this->respondWithError(404, "transaction not found");
+            }
+    
+            $this->respond($transaction);
+        } else {
+            $this->respondWithError(404, $this->jwt_not_found);
         }
 
-        $this->respond($transaction);
     }
 
-    public function updateStatus($id): mixed {
-        if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
-
-        try {
-            $transaction = $this->createObjectFromPostedJson("Models\\Transaction");
-            $transaction = $this->service->updateStatus($transaction, $id);
-
-        } catch (Exception $e) {
-            $this->respondWithError(500, $e->getMessage());
+    public function create() {
+        if ($this->checkJWTToken()) {
+            try {
+                $transaction = $this->createObjectFromPostedJson("Models\\Transaction");
+                $transaction = $this->service->create($transaction);
+    
+            } catch (Exception $e) {
+                $this->respondWithError(500, $e->getMessage());
+            }
+    
+            $this->respond($transaction);
+        } else {
+            $this->respondWithError(404, $this->jwt_not_found);
         }
 
-        $this->respond($transaction);
+    }
+
+    public function updateStatus($id) {
+        if ($this->checkJWTToken()) {
+            try {
+                $transaction = $this->createObjectFromPostedJson("Models\\Transaction");
+                $transaction = $this->service->updateStatus($transaction, $id);
+    
+            } catch (Exception $e) {
+                $this->respondWithError(500, $e->getMessage());
+            }
+    
+            $this->respond($transaction);
+        } else {
+            $this->respondWithError(404, $this->jwt_not_found);
+        }
     }
 }

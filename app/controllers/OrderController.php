@@ -9,59 +9,64 @@ class OrderController extends Controller {
 
     private $service;
 
-    function __construct(
-        ) {
-            $this->service = new OrderService();
-
+    function __construct() {
+        $this->service = new OrderService();
     }
 
     public function getAll() {
-        $user = $this->checkJWTToken();
+        if ($token = $this->checkJWTToken()) {
+            $products = $this->service->getAll($this->paginator(), $token->user->id);
+    
+            $this->respond($products);
+        } else {
+            $this->respondWithError(401, $this->jwt_not_found);
+        }
 
-        $paginator[] = $this->paginator();
-        $products = $this->service->getAll($paginator[0], $paginator[1], $user->id);
-
-        $this->respond($products);
     }
 
     public function getById($id) {
-        if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
-
-        $product = $this->service->getById($id);
-
-        // we might need some kind of error checking that returns a 404 if the product is not found in the DB
-        if (!$product) {
-            $this->respondWithError(404, "Product not found");
+        if ($this->checkJWTToken()) {
+            $product = $this->service->getById($id);
+    
+            if (!$product) $this->respondWithError(404, "Product not found");
+    
+            $this->respond($product);
+        } else {
+            $this->respondWithError(401, $this->jwt_not_found);
         }
 
-        $this->respond($product);
     }
 
-    public function create() :mixed {
-        if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
-
-        try {
-            $product = $this->createObjectFromPostedJson("Model\\Product");
-            $product = $this->service->create($product);
-
-        } catch (Exception $e) {
-            $this->respondWithError(500, $e->getMessage());
+    public function create() {
+        if ($this->checkJWTToken()) {
+            try {
+                $product = $this->createObjectFromPostedJson("Model\\Product");
+                $product = $this->service->create($product);
+    
+            } catch (Exception $e) {
+                $this->respondWithError(500, $e->getMessage());
+            }
+    
+            $this->respond($product);
+        } else {
+            $this->respondWithError(401, $this->jwt_not_found);
         }
 
-        $this->respond($product);
     }
 
-    public function update($id): mixed {
-        if (!$this->checkJWTToken()) $this->respondWithError(500, "Invalid JWT Token");
-
-        try {
-            $product = $this->createObjectFromPostedJson("Model\\Product");
-            $product = $this->service->update($product, $id);
-
-        } catch (Exception $e) {
-            $this->respondWithError(500, $e->getMessage());
+    public function update($id) {
+        if ($this->checkJWTToken()) {
+            try {
+                $product = $this->createObjectFromPostedJson("Model\\Product");
+                $product = $this->service->update($product, $id);
+    
+            } catch (Exception $e) {
+                $this->respondWithError(500, $e->getMessage());
+            }
+    
+            $this->respond($product);
+        } else {
+            $this->respondWithError(401, $this->jwt_not_found);
         }
-
-        $this->respond($product);
     }
 }
