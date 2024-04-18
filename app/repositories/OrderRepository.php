@@ -13,17 +13,26 @@ use Repositories\Repository;
 class OrderRepository extends Repository {
 
     // offset and limit by order and give user_id if not admin
-    public function getAll(Paginator $pages, int $userId) {
+    public function getAll(Paginator $pages, int $user_id) {
         try {            
-            $stmt = $this->connection->prepare("SELECT `order`.`order_id` as id, `order`.`user_id`, `order`.`name`, `order`.`email_address`, `order`.`created`, `order_detail`.`order_detail_id`, `order_detail`.`product_id`, `product`.`name` as product_name, `order_detail`.`amount`, `product`.`price` 
-            from `order`
-            left join `order_detail` on `order`.`order_id` = `order_detail`.`order_id`
-            left join `product` on `product`.`product_id` = `order_detail`.`product_id`
-            where `order`.`user_id` = :id LIMIT :limit OFFSET :offset");
+            $stmt = $this->connection->prepare("SELECT 
+                `Order`.`id` as id, 
+                `Order`.`user_id`, 
+                `Order`.`name`, 
+                `Order`.`email_address`, 
+                `Order`.`created`, 
+                `Order_detail`.`product_id`, 
+                `Product`.`name` as product_name, 
+                `Order_detail`.`amount`, 
+                `Product`.`price` 
+                from `Order`
+                left join `Order_detail` on `Order`.`id` = `Order_detail`.`order_id`
+                left join `Product` on `Product`.`id` = `Order_detail`.`product_id`
+                where `Order`.`user_id` = :id LIMIT :limit OFFSET :offset");
             
             $stmt = $this->setPaginator($stmt, $pages);
 
-            $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
             
             $stmt->execute();
 
@@ -32,11 +41,10 @@ class OrderRepository extends Repository {
             echo $e;
         }
     }
-
     private function convertToClass($stmt) {
         $orders = [];
+        $lastKey = 0;
         while (($row = $stmt->fetch(PDO::FETCH_ASSOC)) !== false) {
-            $lastKey = $orders[array_key_last($orders)];
             if($orders[$lastKey]->id !== $row['id'] || !$orders) {
                 $order = new Order(
                     $row['id'],
@@ -50,26 +58,37 @@ class OrderRepository extends Repository {
             } else {
                 $orders[$lastKey]->items[] = $this->setOrderDetail($row);
             }
+            $lastKey = $row['id'] -1;
         }
         return $orders;
     }
 
     private function setOrderDetail($row): OrderDetail {
         return new OrderDetail(
-            $row['id'],
             $row['product_id'],
             $row['product_name'],
             $row['amount'],
-            $row['price'],
+            $row['price']
         );
     }
 
     // give user_id if not admin
     public function getById(int $id, ) {
         try {
-            $query = "SELECT `order`.`order_id` as id, `order`.`user_id`, `order`.`name`, `order`.`email_address`, `order`.`created`, `order_detail`.`order_detail_id`, `order_detail`.`product_id`, `product`.`name` as product_name, `order_detail`.`amount`, `product`.`price` from `order` left join `order_detail` on `order`.`order_id` = `order_detail`.`order_id` left join `product` on `product`.`product_id` = `order_detail`.`product_id` where `order`.`order_id` = :id";
-
-            $stmt = $this->connection->prepare($query);
+            $stmt = $this->connection->prepare("SELECT 
+                `Order`.`id` as id, 
+                `Order`.`user_id`, 
+                `Order`.`name`, 
+                `Order`.`email_address`, 
+                `Order`.`created`, 
+                `Order_detail`.`product_id`, 
+                `Product`.`name` as product_name, 
+                `Order_detail`.`amount`, 
+                `Product`.`price` 
+                from `Order`
+                left join `Order_detail` on `Order`.`id` = `Order_detail`.`order_id`
+                left join `Product` on `Product`.`id` = `Order_detail`.`product_id`
+                where `Order`.`id` = :id");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
 
@@ -80,7 +99,7 @@ class OrderRepository extends Repository {
     }
 
     public function create(Order $order){
-        $order->created = new DateTime();
+        $order->created = (string) new DateTime();
 
         try {
             $stmt = $this->connection->prepare("INSERT into `order` (user_id, name, email_address, created) values (?,?,?,?)");

@@ -11,7 +11,7 @@ class Order {
     public int $user_id;
     public string $name;
     public string $email_address;
-    public DateTime $created;
+    public string $created;
     public array $items;
     
     // public function getTotalPrice(): mixed {
@@ -26,7 +26,7 @@ class Order {
     //     }
     // }
 
-    public function __construct(int $id, int $user_id, string $name, string $email_address, DateTime $created, array $items) {
+    public function __construct(int $id, int $user_id, string $name, string $email_address, string $created, array $items) {
         $this->id = $id;
         $this->user_id = $user_id;
         $this->name = $name;
