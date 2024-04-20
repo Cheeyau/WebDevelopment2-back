@@ -11,6 +11,7 @@ use \Models\JWTToken;
 class Controller {
     
     public string $jwt_not_found = 'JWT token was not provided or readable, please login again.';
+    public string $user_unauthorized = 'User is unauthorized.';
 
     function respond($data) {
         $this->respondWithCode(200, $data);

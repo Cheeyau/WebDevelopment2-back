@@ -2,28 +2,25 @@
 
 namespace Services;
 
+use Models\Paginator;
 use Models\Transaction;
 Use Repositories\TransactionRepository;
-Use Repositories\UserRepository;
 
 class TransactionService {
     
     private $repo;
-    private $user_repo;
     function __construct() {
         $this->repo  = new TransactionRepository();
-        $this->user_repo = new UserRepository();
     }
 
-    public function getAll($offset = NULL, $limit = NULL): mixed {
-        return $this->repo->getAll($offset, $limit);
+    public function getAll(Paginator $paginator, int $user) {
+        return $this->repo->getAll($paginator, $user);
     }
 
-    public function getById(int $id) {
-        return $this->repo->getById($id);
+    public function getById(int $id, int $user_id) {
+        return $this->repo->getById($id, $user_id);
     }
 
-    // TODO check user id 
     public function create(Transaction $transaction) {       
         return $this->repo->create($transaction);        
     }

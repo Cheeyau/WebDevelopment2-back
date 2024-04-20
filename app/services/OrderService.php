@@ -3,16 +3,19 @@
 namespace Services;
 
 use Repositories\OrderRepository;
+use Services\TransactionService;
 use Models\Order;
 use Models\Paginator;
+use Models\Transaction;
 use Exception;
 
 class OrderService {
     
-    private $user_repo;
+    private $transaction_service;
     private $repo;
     function __construct() {
         $this->repo = new OrderRepository();
+        $this->transaction_service = new TransactionService();
     }
 
     public function getAll(Paginator $paginator, $user_id) {
@@ -27,7 +30,9 @@ class OrderService {
         return $this->repo->getById($id);
     }
 
-    public function create(Order $order) {       
+    public function create(int $user_id, Order $order, Transaction $transaction)  {
+        $saved_transaction = $this->transaction_service->create($transaction);
+        $order->transaction_id = $saved_transaction->id;
         return $this->repo->create($order);        
     }
 

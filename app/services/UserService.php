@@ -17,7 +17,7 @@ class UserService {
         return $this->repo->checkUsernamePassword($name, $password);
     }
     
-    public function getUser(int $user_id) {
+    public function getById(int $user_id) {
         return $this->repo->getById($user_id);
     }
 

@@ -41,8 +41,7 @@ CREATE TABLE `Jwt_token` (
 CREATE TABLE `Order` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `email_address` varchar(255) NOT NULL,
+  `transaction_id` int(11) NOT NULL,
   `created` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -50,10 +49,10 @@ CREATE TABLE `Order` (
 -- Dumping data for table `Order`
 --
 
-INSERT INTO `Order` (`id`, `user_id`, `name`, `email_address`, `created`) VALUES
-(1, 1, 'Bob', 'bob@mail.com', '2021-03-20 15:05:00'),
-(2, 1, 'Bob', 'bob@mail.com', '2021-03-21 15:05:00'),
-(3, 2, 'James', 'james@mail.com', '2021-03-21 15:05:00');
+INSERT INTO `Order` (`id`, `user_id`, `transaction_id`, `created`) VALUES
+(1, 1, 1, '2021-03-20 15:05:00'),
+(2, 1, 2, '2021-03-21 15:05:00'),
+(3, 2, 3, '2021-03-21 15:05:00');
 
 -- --------------------------------------------------------
 
@@ -114,10 +113,9 @@ INSERT INTO `Product` (`id`, `price`, `name`, `image`, `description`) VALUES
 
 CREATE TABLE `Transaction` (
   `id` int(11) NOT NULL,
-  `amount` float NOT NULL,
+  `total` float NOT NULL,
   `user_id` int(11) NOT NULL,
   `created` datetime NOT NULL,
-  `order_id` int(11) NOT NULL,
   `status` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -125,10 +123,10 @@ CREATE TABLE `Transaction` (
 -- Dumping data for table `Transaction`
 --
 
-INSERT INTO `Transaction` (`id`, `amount`, `user_id`, `created`, `order_id`, `status`) VALUES
-(1, 130, 1, '2021-03-20 15:05:00', 1, 'completed'),
-(2, 400, 1, '2021-03-21 15:05:00', 2, 'refunded'),
-(3, 680, 2, '2021-03-20 15:05:00', 3, 'pending');
+INSERT INTO `Transaction` (`id`, `total`, `user_id`, `created`, `status`) VALUES
+(1, 130, 1, '2021-03-20 15:05:00', 'completed'),
+(2, 400, 1, '2021-03-21 15:05:00', 'refunded'),
+(3, 680, 2, '2021-03-20 15:05:00', 'pending');
 
 -- --------------------------------------------------------
 
@@ -152,6 +150,7 @@ CREATE TABLE `User` (
 INSERT INTO `User` (`id`, `name`, `email_address`, `password`, `user_roll`, `registration`) VALUES
 (1, 'Bob', 'bob@mail.com', '$2y$10$Zmo87y9iVspKhB7uUgjfhOLZvZ0HEeG3VzHNNKwpPcqrOTlgbQdgu', 1, '2021-03-20 15:00:00'),
 (2, 'James', 'james@mail.com', '$2y$10$Zmo87y9iVspKhB7uUgjfhOLZvZ0HEeG3VzHNNKwpPcqrOTlgbQdgu', 2, '2021-04-20 15:00:00');
+(2, 'Elon', 'Elon@mail.com', '$2y$10$Zmo87y9iVspKhB7uUgjfhOLZvZ0HEeG3VzHNNKwpPcqrOTlgbQdgu', 0, '2021-04-20 15:00:00');
 
 --
 -- Indexes for dumped tables

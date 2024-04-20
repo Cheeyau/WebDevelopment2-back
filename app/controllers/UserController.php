@@ -71,7 +71,7 @@ class UserController extends Controller {
 
     public function getById(int $id) {
         if ($this->checkJWTToken()) {
-            $user = $this->service->getUser($id);
+            $user = $this->service->getById($id);
     
             if (!$user) {
                 $this->respondWithError(404, "User not found");

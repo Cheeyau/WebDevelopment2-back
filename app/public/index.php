@@ -27,7 +27,6 @@ $router->get("/transactions", "TransactionController@getAll");
 $router->get("/transactions/(\d+)", "TransactionController@getById");
 $router->post("/transactions", "TransactionController@create");
 $router->put("/transactions/(\d+)", "TransactionController@update");
-$router->get("/products", "ProductController@getAll");
 
 $router->get("/products/(\d+)", "ProductController@getById");
 $router->post("/products", "ProductController@create");

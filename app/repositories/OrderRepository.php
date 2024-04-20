@@ -11,23 +11,26 @@ use PDOException;
 use Repositories\Repository;
 
 class OrderRepository extends Repository {
-
-    // offset and limit by order and give user_id if not admin
     public function getAll(Paginator $pages, int $user_id) {
         try {            
             $stmt = $this->connection->prepare("SELECT 
                 `Order`.`id` as id, 
                 `Order`.`user_id`, 
-                `Order`.`name`, 
-                `Order`.`email_address`, 
+                `User`.`name`, 
+                `User`.`email_address`, 
                 `Order`.`created`, 
                 `Order_detail`.`product_id`, 
+                `Order_detail`.`id` as order_detail_id, 
                 `Product`.`name` as product_name, 
                 `Order_detail`.`amount`, 
-                `Product`.`price` 
+                `Product`.`price`,
+                `Transaction`.`status`,
+                `Transaction`.`total`
                 from `Order`
                 left join `Order_detail` on `Order`.`id` = `Order_detail`.`order_id`
                 left join `Product` on `Product`.`id` = `Order_detail`.`product_id`
+                left join `User` on `User`.`id` = `Order`.`user_id`
+                left join `Transaction` on `Transaction`.`id` = `Order`.`transaction_id`
                 where `Order`.`user_id` = :id LIMIT :limit OFFSET :offset");
             
             $stmt = $this->setPaginator($stmt, $pages);
@@ -36,35 +39,82 @@ class OrderRepository extends Repository {
             
             $stmt->execute();
 
-            return $this->convertToClass($stmt);
+            return $this->convertToClass($stmt, $user_id);
         } catch (PDOException $e) {
             echo $e;
         }
     }
-    private function convertToClass($stmt) {
+
+    public function getById(int $id) {
+        try {
+            $stmt = $this->connection->prepare("SELECT 
+                `Order`.`id` as id, 
+                `Order`.`user_id`, 
+                `User`.`name`, 
+                `User`.`email_address`, 
+                `Order`.`created`, 
+                `Order_detail`.`product_id`, 
+                `Order_detail`.`id` as order_detail_id, 
+                `Product`.`name` as product_name, 
+                `Order_detail`.`amount`, 
+                `Product`.`price`,
+                `Transaction`.`status`,
+                `Transaction`.`total`
+                from `Order`
+                left join `Order_detail` on `Order`.`id` = `Order_detail`.`order_id`
+                left join `Product` on `Product`.`id` = `Order_detail`.`product_id`
+                left join `User` on `User`.`id` = `Order`.`user_id`
+                left join `Transaction` on `Transaction`.`id` = `Order`.`transaction_id`
+                where `Order`.`id` = :id");
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return $this->convertToClass($stmt, $user_id = null);
+        } catch (PDOException $e) {
+            echo $e;
+        }
+    }
+    private function convertToClass($stmt, $user_id) {
         $orders = [];
         $lastKey = 0;
-        while (($row = $stmt->fetch(PDO::FETCH_ASSOC)) !== false) {
-            if($orders[$lastKey]->id !== $row['id'] || !$orders) {
-                $order = new Order(
-                    $row['id'],
-                    $row['user_id'],
-                    $row['name'],
-                    $row['email_address'],
-                    $row['created'],
-                    [$this->setOrderDetail($row)]
-                );
-                $orders[] = $order;
-            } else {
-                $orders[$lastKey]->items[] = $this->setOrderDetail($row);
+        if (!is_null($user_id)) {
+            while (($row = $stmt->fetch(PDO::FETCH_ASSOC)) !== false) {
+                if($orders[$lastKey]->id !== $row['id'] || !$orders) {
+                    $order = $this->setOrder($row);
+                    $orders[] = $order;
+                } else {
+                    $orders[$lastKey]->items[] = $this->setOrderDetail($row);
+                }
+                $lastKey = array_key_last($orders);
             }
-            $lastKey = $row['id'] -1;
+        } else {
+            while (($row = $stmt->fetch(PDO::FETCH_ASSOC)) !== false) {
+                if(!$orders) {
+                    $order = $this->setOrder($row);
+                    $orders[] = $order;
+                } else {
+                    $orders[0]->items[] = $this->setOrderDetail($row);
+                }
+            }
         }
         return $orders;
     }
+    private function setOrder($row) { 
+        return Order::create(
+            $row['id'],
+            $row['user_id'],
+            $row['name'],
+            $row['email_address'],
+            $row['created'],
+            [$this->setOrderDetail($row)],
+            $row['total'],
+            $row['status']
+        );
+    }
 
     private function setOrderDetail($row): OrderDetail {
-        return new OrderDetail(
+        return OrderDetail::get(
+            $row['order_detail_id'],
             $row['product_id'],
             $row['product_name'],
             $row['amount'],
@@ -72,45 +122,24 @@ class OrderRepository extends Repository {
         );
     }
 
-    // give user_id if not admin
-    public function getById(int $id, ) {
-        try {
-            $stmt = $this->connection->prepare("SELECT 
-                `Order`.`id` as id, 
-                `Order`.`user_id`, 
-                `Order`.`name`, 
-                `Order`.`email_address`, 
-                `Order`.`created`, 
-                `Order_detail`.`product_id`, 
-                `Product`.`name` as product_name, 
-                `Order_detail`.`amount`, 
-                `Product`.`price` 
-                from `Order`
-                left join `Order_detail` on `Order`.`id` = `Order_detail`.`order_id`
-                left join `Product` on `Product`.`id` = `Order_detail`.`product_id`
-                where `Order`.`id` = :id");
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-
-            return $this->convertToClass($stmt)[0];
-        } catch (PDOException $e) {
-            echo $e;
-        }
-    }
-
     public function create(Order $order){
-        $order->created = (string) new DateTime();
+        $now = new DateTime();
+        $order->created = $now->format('Y-m-d H:i:s');
 
         try {
-            $stmt = $this->connection->prepare("INSERT into `order` (user_id, name, email_address, created) values (?,?,?,?)");
+            $stmt = $this->connection->prepare("INSERT into `Order` (user_id, transaction_id, created) values (?,?,?)");
 
-            $stmt->execute([$order->user_id, $order->name, $order->email_address, $order->created]);
+            $stmt->execute([$order->user_id, $order->transaction_id, $order->created]);
 
             $order->id = $this->connection->lastInsertId();
 
-            $stmt = $this->connection->prepare("INSERT into `order_detail` (order_id, product_id, amount) values (?,?,?)");
+            foreach ($order->items as $item) {
+                $item->order_id = $order->id;
+            }
+
+            $stmt = $this->connection->prepare("INSERT into `Order_detail` (order_id, product_id, amount) values (?,?,?)");
             foreach($order->items as $item) {
-                $stmt->execute([$order->user_id, $order->name, $order->email_address, $order->created]);
+                $stmt->execute([$item->order_id, $item->product_id, $item->amount]);
             }
 
             return $this->getById($order->id);
@@ -132,20 +161,6 @@ class OrderRepository extends Repository {
             }
 
             return $this->getById($id);
-        } catch (PDOException $e) {
-            echo $e;
-        }
-    }
-
-    public function delete(int $id) {
-        try {
-            $stmt = $this->connection->prepare("DELETE from `order` where `order_id` = :id");
-            $stmt->bindParam(':id', $id);
-            $stmt->execute();
-
-            $stmt = $this->connection->prepare("DELETE from `order_detail` where `order_id` = :id");
-            $stmt->bindParam(':id', $id);
-            $stmt->execute();
         } catch (PDOException $e) {
             echo $e;
         }

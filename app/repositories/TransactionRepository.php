@@ -15,9 +15,27 @@ class TransactionRepository extends Repository {
     function getAll(Paginator $pages, int $user) {
         try {
             if(isset($user)) {
-                $query = "SELECT `transaction`.`id` AS id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` FROM `transaction` LEFT JOIN `user` ON `transaction`.`user_id` = `user`.`user_id` WHERE `transaction`.`user_id` = :id  LIMIT :limit OFFSET :offset";
+                $query = "SELECT 
+                `Transaction`.`id`, 
+                `Transaction`.`total`, |
+                `Transaction`.`user_id`, 
+                `User`.`name`, 
+                `Transaction`.`created`, 
+                `Transaction`.`status` 
+                FROM `Transaction` LEFT JOIN `User` ON `Transaction`.`user_id` = `User`.`id` 
+                WHERE `Transaction`.`user_id` = :id  
+                LIMIT :limit OFFSET :offset";
             } else {
-                $query = "SELECT `transaction`.`id` AS id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` FROM `transaction` LEFT JOIN `user` ON `transaction`.`user_id` = `user`.`user_id` LIMIT :limit OFFSET :offset";
+                $query = "SELECT 
+                `Transaction`.`id`, 
+                `Transaction`.`total`, 
+                `Transaction`.`user_id`, 
+                `User`.`name`, 
+                `Transaction`.`created`, 
+                `Transaction`.`status` 
+                FROM `Transaction` 
+                LEFT JOIN `User` ON `Transaction`.`user_id` = `User`.`user_id` 
+                LIMIT :limit OFFSET :offset";
             }
             
             $stmt = $this->connection->prepare($query);
@@ -37,17 +55,33 @@ class TransactionRepository extends Repository {
     }
 
     // give user_id if not admin
-    public function getById(int $id, int $user = null) {
+    public function getById(int $id, int $user_id) {
         try {
             if(isset($user)) {
-                $query = "SELECT `transaction`.`id` AS id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` FROM `transaction` LEFT JOIN `user` ON `transaction`.`user_id` = `user`.`user_id` WHERE `transaction`.`id` = :id AND `transaction`.`user_id` = :user_id";
+                $query = "SELECT 
+                `Transaction`.`id`, 
+                `Transaction`.`total`, 
+                `Transaction`.`user_id`, 
+                `user`.`name`, 
+                `Transaction`.`created`, 
+                `Transaction`.`status` 
+                FROM `Transaction` LEFT JOIN `User` ON `Transaction`.`user_id` = `User`.`id` 
+                WHERE `Transaction`.`id` = :id AND `Transaction`.`user_id` = :user_id";
             } else {
-                $query = "SELECT `transaction`.`id` AS id, `transaction`.`amount`, `transaction`.`user_id`, `user`.`name`, `transaction`.`created`, `transaction`.`order_id`, `transaction`.`status` FROM `transaction` LEFT JOIN `user` ON `transaction`.`user_id` = `user`.`user_id` WHERE `transaction`.`id` = :id";
+                $query = "SELECT 
+                `Transaction`.`id`, 
+                `Transaction`.`total`, 
+                `Transaction`.`user_id`, 
+                `User`.`name`, 
+                `Transaction`.`created`, 
+                `Transaction`.`status` 
+                FROM `Transaction` LEFT JOIN `User` ON `Transaction`.`user_id` = `User`.`id` 
+                WHERE `Transaction`.`id` = :id";
             }
             $stmt = $this->connection->prepare($query);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-            if(isset($user)) $stmt->bindParam(':id', $user, PDO::PARAM_INT);
+            if(isset($user)) $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
 
             $stmt->execute();
 
@@ -60,15 +94,17 @@ class TransactionRepository extends Repository {
     }
 
     public function create(Transaction $transaction) {
-        $transaction->created = new DateTime();
-        try {
-            $stmt = $this->connection->prepare("INSERT into transaction () values (?,?,?,?)");
+        $now = new DateTime();
+        $transaction->created = $now->format('Y-m-d H:i:s');
 
-            $stmt->execute([$transaction->amount, $transaction->id, $transaction->created, $transaction->order_id, $transaction->status]);
+        try {
+            $stmt = $this->connection->prepare("INSERT into `Transaction` (total, user_id, created, status) values (?,?,?,?)");
+
+            $stmt->execute([$transaction->total, $transaction->user_id, $transaction->created, $transaction->status]);
 
             $transaction->id = $this->connection->lastInsertId();
 
-            return $this->getById($transaction->id);
+            return $this->getById($transaction->id, $transaction->user_id);
         } catch (PDOException $e) {
             echo $e;
         }
@@ -81,7 +117,7 @@ class TransactionRepository extends Repository {
 
             $stmt->execute([$transaction->status, $id]);
 
-            return $this->getById($id);
+            return $this->getById($id, $transaction->user_id);
         } catch (PDOException $e) {
             echo $e;
         }
