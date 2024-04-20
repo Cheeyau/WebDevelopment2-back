@@ -12,11 +12,11 @@ use Exception;
 class OrderController extends Controller {
 
     private $service;
-    private $user_service;
 
     function __construct() {
         $this->service = new OrderService();
-        $this->user_service = new UserService();
+        $user_service = new UserService();
+        $this->setUserService($user_service);
     }
     private function convertOrderDetail(Order $order) {
         $order_detail = [];
@@ -27,14 +27,15 @@ class OrderController extends Controller {
         return $order;        
     }
 
-    private function checkLoginUser(int $user_id, int $order_user_id) {
-        $login_user = $this->user_service->getById($user_id);
-        return (!$login_user || (($login_user->id === $order_user_id) && ($login_user->user_roll === 0)) || $login_user->user_roll > 0) ? false : true;
-    }
-
+    // user id given to get results based on user or none to get all 
     public function getAll() {
         if ($token = $this->checkJWTToken()) {
-            $orders = $this->service->getAll($this->paginator(), $token->user->id);
+            
+            $paginator = $this->paginator();
+
+            $user_roll = (isset($paginator->id)) ? $this->getUserRoll($paginator->id) : $this->getUserRoll($token->user->id);
+
+            $orders = $this->service->getAll($paginator, $token->user->id, $user_roll);
             
             if (!$orders) {
                 $this->respond($orders);
@@ -86,7 +87,7 @@ class OrderController extends Controller {
         }
     }
 
-    public function update($id) {
+    public function updateStatus($id) {
         if ($token = $this->checkJWTToken()) {
             try {
                 $order = $this->createObjectFromPostedJson("Models\\Order");
@@ -94,7 +95,7 @@ class OrderController extends Controller {
                 if ($this->checkLoginUser($token->user->id, $order->user_id)) {
                     $this->respondWithError(401, $this->user_unauthorized);
                 } else {
-                    $order = $this->service->update($this->convertOrderDetail($order), $id);
+                    $order = $this->service->updateStatus($order, $id);
                     $this->respond($order);
                 }
 

@@ -10,6 +10,7 @@ class Transaction {
     public float $total;
     public int $user_id;
     public string $created;
+    public string $name;
     public int $order_id;
     public string $status;
 

@@ -21,12 +21,12 @@ $router->get("/users", "UserController@getAll");
 $router->get("/orders", "OrderController@getAll");
 $router->get("/orders/(\d+)", "OrderController@getById");
 $router->post("/orders", "OrderController@create");
-$router->put("/orders/(\d+)", "OrderController@update");
+$router->put("/orders/(\d+)", "OrderController@updateStatus");
 
 $router->get("/transactions", "TransactionController@getAll");
 $router->get("/transactions/(\d+)", "TransactionController@getById");
 $router->post("/transactions", "TransactionController@create");
-$router->put("/transactions/(\d+)", "TransactionController@update");
+$router->put("/transactions/(\d+)", "TransactionController@updateStatus");
 
 $router->get("/products/(\d+)", "ProductController@getById");
 $router->post("/products", "ProductController@create");

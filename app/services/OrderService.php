@@ -18,9 +18,9 @@ class OrderService {
         $this->transaction_service = new TransactionService();
     }
 
-    public function getAll(Paginator $paginator, $user_id) {
+    public function getAll(Paginator $paginator, int $user_id, int $user_roll) {
         try {
-            return $this->repo->getAll($paginator, $user_id);
+            return $this->repo->getAll($paginator, $user_id, $user_roll);
         } catch(Exception $e) {
             echo $e;
         }
@@ -36,7 +36,7 @@ class OrderService {
         return $this->repo->create($order);        
     }
 
-    public function update(Order $order, int $id) {       
-        return $this->repo->update($order, $id);        
+    public function updateStatus(Order $order, int $id) {
+        return $this->repo->updateStatus($order, $id);        
     }
 }

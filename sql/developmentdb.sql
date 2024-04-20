@@ -42,17 +42,18 @@ CREATE TABLE `Order` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `transaction_id` int(11) NOT NULL,
-  `created` datetime NOT NULL
+  `created` datetime NOT NULL,
+  `status` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `Order`
 --
 
-INSERT INTO `Order` (`id`, `user_id`, `transaction_id`, `created`) VALUES
-(1, 1, 1, '2021-03-20 15:05:00'),
-(2, 1, 2, '2021-03-21 15:05:00'),
-(3, 2, 3, '2021-03-21 15:05:00');
+INSERT INTO `Order` (`id`, `user_id`, `transaction_id`, `created`, `status`) VALUES
+(1, 1, 1, '2021-03-20 15:05:00', 'Shipped'),
+(2, 1, 2, '2021-03-21 15:05:00', 'Pending'),
+(3, 2, 3, '2021-03-21 15:05:00', 'Delivered');
 
 -- --------------------------------------------------------
 
@@ -124,9 +125,9 @@ CREATE TABLE `Transaction` (
 --
 
 INSERT INTO `Transaction` (`id`, `total`, `user_id`, `created`, `status`) VALUES
-(1, 130, 1, '2021-03-20 15:05:00', 'completed'),
-(2, 400, 1, '2021-03-21 15:05:00', 'refunded'),
-(3, 680, 2, '2021-03-20 15:05:00', 'pending');
+(1, 130, 1, '2021-03-20 15:05:00', 'Completed'),
+(2, 400, 1, '2021-03-21 15:05:00', 'Refunded'),
+(3, 680, 2, '2021-03-20 15:05:00', 'Pending');
 
 -- --------------------------------------------------------
 
@@ -149,8 +150,8 @@ CREATE TABLE `User` (
 
 INSERT INTO `User` (`id`, `name`, `email_address`, `password`, `user_roll`, `registration`) VALUES
 (1, 'Bob', 'bob@mail.com', '$2y$10$Zmo87y9iVspKhB7uUgjfhOLZvZ0HEeG3VzHNNKwpPcqrOTlgbQdgu', 1, '2021-03-20 15:00:00'),
-(2, 'James', 'james@mail.com', '$2y$10$Zmo87y9iVspKhB7uUgjfhOLZvZ0HEeG3VzHNNKwpPcqrOTlgbQdgu', 2, '2021-04-20 15:00:00');
-(2, 'Elon', 'Elon@mail.com', '$2y$10$Zmo87y9iVspKhB7uUgjfhOLZvZ0HEeG3VzHNNKwpPcqrOTlgbQdgu', 0, '2021-04-20 15:00:00');
+(2, 'James', 'james@mail.com', '$2y$10$Zmo87y9iVspKhB7uUgjfhOLZvZ0HEeG3VzHNNKwpPcqrOTlgbQdgu', 2, '2021-04-20 15:00:00'),
+(3, 'Elon', 'Elon@mail.com', '$2y$10$Zmo87y9iVspKhB7uUgjfhOLZvZ0HEeG3VzHNNKwpPcqrOTlgbQdgu', 0, '2021-04-20 15:00:00');
 
 --
 -- Indexes for dumped tables

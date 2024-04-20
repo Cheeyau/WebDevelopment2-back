@@ -7,9 +7,16 @@ use \Firebase\JWT\Key;
 use \Exception;
 use \Models\Paginator;
 use \Models\JWTToken;
+use \Services\UserService;
 
 class Controller {
     
+    private $user_service;
+
+    public function setUserService(UserService $user_service) {
+        $this->user_service = $user_service;
+    }
+
     public string $jwt_not_found = 'JWT token was not provided or readable, please login again.';
     public string $user_unauthorized = 'User is unauthorized.';
 
@@ -74,7 +81,15 @@ class Controller {
     public function paginator(): Paginator {
         $pages = $this->createObjectFromPostedJson('Models\\Paginator');
         $pages->offset = isset($pages->offset) ? $pages->offset : 0;
-        $pages->limit = isset($pages->limit) ? $pages->limit : 5;   
+        $pages->limit = isset($pages->limit) ? $pages->limit : 5;
         return $pages;
-   }
+    }
+    public function checkLoginUser(int $user_id, int $login_user_id) {
+        $db_user = $this->user_service->getById($user_id);
+        return (!$db_user || (($db_user->id === $login_user_id) && ($db_user->user_roll === 0)) || $db_user->user_roll > 0) ? false : true;
+    }
+
+    public function getUserRoll(int $user_id) {
+        return $this->user_service->getById($user_id)->user_roll;
+    }
 }
