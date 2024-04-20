@@ -5,13 +5,15 @@ namespace Controllers;
 use Exception;
 
 use Services\ProductService;
+use Services\UserService;
 
 class ProductController extends Controller {
 
     private $service;
     function __construct() {
         $this->service = new ProductService();
-
+        $user_service = new UserService();
+        $this->setUserService($user_service);
     }
 
     public function getAll() {
@@ -29,48 +31,57 @@ class ProductController extends Controller {
     }
 
     public function create() {
-        if ($this->checkJWTToken()) {
+        if ($token = $this->checkJWTToken()) {
             try {
                 $product = $this->createObjectFromPostedJson("Models\\Product");
-                $this->service->create($product);
+                
+                if ($this->checkLoginUser($token->user->id, $token->user->id) || $this->getUserRoll($token->user->id) === 0) {
+                    $this->respondWithError(401, $this->user_unauthorized);
+                } else {
+                    $product = $this->service->create($product);
+                    $this->respond($product);
+                }
             } catch (Exception $e) {
                 $this->respondWithError(500, $e->getMessage());
             }
-
-            $this->respond($product); 
         } else {
             $this->respondWithError(401, $this->jwt_not_found);
         }
     }
 
     public function update($id) {
-        if ($this->checkJWTToken()) {
+        if ($token =    $this->checkJWTToken()) {
             try {
                 $product = $this->createObjectFromPostedJson("Models\\Product");
-                $product = $this->service->update($product, $id);
-    
+                if ($this->checkLoginUser($token->user->id, $token->user->id) || $this->getUserRoll($token->user->id) === 0) {
+                    $this->respondWithError(401, $this->user_unauthorized);
+                } else {
+                    $product = $this->service->update($product, $id);
+                    $this->respond($product);
+                }
             } catch (Exception $e) {
                 $this->respondWithError(500, $e->getMessage());
             }
     
-            $this->respond($product);
         } else {
             $this->respondWithError(401, $this->jwt_not_found);
         }
     }
 
     public function delete($id) {
-        if ($this->checkJWTToken()) {
+        if ($token = $this->checkJWTToken()) {
             try {
-                $this->service->delete($id);
+                if ($this->checkLoginUser($token->user->id, $token->user->id) || $this->getUserRoll($token->user->id) === 0) {
+                    $this->respondWithError(401, $this->user_unauthorized);
+                } else {
+                    $this->service->delete($id);
+                    $this->respond(true);
+                }
             } catch (Exception $e) {
                 $this->respondWithError(500, $e->getMessage());
             }
-    
-            $this->respond(true);
         } else {
             $this->respondWithError(401, $this->jwt_not_found);
         }
-
     }
 }

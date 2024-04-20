@@ -92,7 +92,7 @@ class OrderController extends Controller {
             try {
                 $order = $this->createObjectFromPostedJson("Models\\Order");
                 
-                if ($this->checkLoginUser($token->user->id, $order->user_id)) {
+                if ($this->checkLoginUser($token->user->id, $order->user_id) || $this->getUserRoll($token->user->id) === 0) {
                     $this->respondWithError(401, $this->user_unauthorized);
                 } else {
                     $order = $this->service->updateStatus($order, $id);

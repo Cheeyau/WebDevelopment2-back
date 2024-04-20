@@ -71,7 +71,7 @@ class OrderRepository extends Repository {
         $lastKey = 0;
         if (!is_null($user_id)) {
             while (($row = $stmt->fetch(PDO::FETCH_ASSOC)) !== false) {
-                if($orders[$lastKey]->id !== $row['id'] || !$orders) {
+                if(!$orders || $orders[$lastKey]->id !== $row['id']) {
                     $order = $this->setOrder($row);
                     $orders[] = $order;
                 } else {
