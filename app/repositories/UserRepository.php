@@ -32,7 +32,7 @@ class UserRepository extends Repository {
 
     public function getByName(string $name) {
         try { 
-            $stmt = $this->connection->prepare("SELECT `id`, `name`, `user_roll`, `password` FROM User WHERE `name` = ?");
+            $stmt = $this->connection->prepare("SELECT `id`, `name`, `user_role`, `password` FROM User WHERE `name` = ?");
             $stmt->execute([$name]);
 
             $stmt->setFetchMode(PDO::FETCH_CLASS, 'Models\User');
@@ -69,16 +69,16 @@ class UserRepository extends Repository {
     public function create(User $user) {
         $user->registration = date_format(new DateTime(), "Y-m-d H:i:s");
         try {
-            $stmt = $this->connection->prepare("INSERT into `User` (name, email_address, password, user_roll, registration) values (?,?,?,?,?)");
+            $stmt = $this->connection->prepare("INSERT into `User` (name, email_address, password, user_role, registration) values (?,?,?,?,?)");
 
-            $stmt->execute([$user->name, $user->email_address, $this->hashPassword($user->password), $user->user_roll, $user->registration]);
+            $stmt->execute([$user->name, $user->email_address, $this->hashPassword($user->password), $user->user_role, $user->registration]);
 
             $user->id = $this->connection->lastInsertId();
             
             $user = $this->getById($user->id);
             
             unset($user->password);
-            unset($user->user_roll);
+            unset($user->user_role);
             
             return $user;
         } catch (PDOException $e) {
@@ -88,9 +88,9 @@ class UserRepository extends Repository {
 
     public function update(User $user, int $id) {
         try {
-            $stmt = $this->connection->prepare("UPDATE `User` set `name` = ?, `email_address` = ?, `password` = ?, `user_roll` = ? where `User`.`id` = ?");
+            $stmt = $this->connection->prepare("UPDATE `User` set `name` = ?, `email_address` = ?, `password` = ?, `user_role` = ? where `User`.`id` = ?");
 
-            $stmt->execute([$user->name, $user->email_address, $user->password, $user->user_roll, $id]);
+            $stmt->execute([$user->name, $user->email_address, $user->password, $user->user_role, $id]);
 
             return $this->getById($id);
         } catch (PDOException $e) {

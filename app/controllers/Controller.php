@@ -86,10 +86,10 @@ class Controller {
     }
     public function checkLoginUser(int $user_id, int $login_user_id) {
         $db_user = $this->user_service->getById($user_id);
-        return (!$db_user || (($db_user->id === $login_user_id) && ($db_user->user_roll === 0)) || $db_user->user_roll > 0) ? false : true;
+        return (!$db_user || (($db_user->id === $login_user_id) && ($db_user->user_role === 0)) || $db_user->user_role > 0) ? false : true;
     }
 
     public function getUserRoll(int $user_id) {
-        return $this->user_service->getById($user_id)->user_roll;
+        return $this->user_service->getById($user_id)->user_role;
     }
 }

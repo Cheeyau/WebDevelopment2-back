@@ -32,13 +32,13 @@ class OrderRepository extends Repository {
         left join `User` on `User`.`id` = `Order`.`user_id`
         left join `Transaction` on `Transaction`.`id` = `Order`.`transaction_id` ";
     
-    public function getAll(Paginator $pages, int $user_id, int $user_roll) {
+    public function getAll(Paginator $pages, int $user_id, int $user_role) {
         try {            
             
-            if ($user_roll === 0 || !isset($pages->user_id)) { 
+            if ($user_role === 0 || !isset($pages->user_id)) { 
                 $stmt = $this->connection->prepare($this->get_order_query . "where `Order`.`user_id` = :id LIMIT :limit OFFSET :offset");
                 $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
-            } else if (isset($pages->user_id) && $user_roll >= 0) {
+            } else if (isset($pages->user_id) && $user_role >= 0) {
                 $stmt = $this->connection->prepare($this->get_order_query . "where `Order`.`user_id` = :id LIMIT :limit OFFSET :offset");
                 $stmt->bindParam(':id', $pages->user_id, PDO::PARAM_INT);
             } else {

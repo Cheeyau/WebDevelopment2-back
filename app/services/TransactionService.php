@@ -13,8 +13,8 @@ class TransactionService {
         $this->repo  = new TransactionRepository();
     }
 
-    public function getAll(Paginator $paginator, int $user_id, int $user_roll) {
-        return $this->repo->getAll($paginator, $user_id, $user_roll);
+    public function getAll(Paginator $paginator, int $user_id, int $user_role) {
+        return $this->repo->getAll($paginator, $user_id, $user_role);
     }
 
     public function getById(int $id, int $user_id) {

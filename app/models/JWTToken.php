@@ -20,7 +20,7 @@ class JWTToken {
         $user = new User();
         $user->id = $decoded->data->id;
         $user->name = $decoded->data->name;
-        $user->user_roll = $decoded->data->user_roll;
+        $user->user_role = $decoded->data->user_role;
         
         $this->user = $user;
     }

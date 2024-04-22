@@ -44,7 +44,7 @@ class UserController extends Controller {
             "data" => array(
                 "id" => $user->id,
                 "name" => $user->name,
-                "user_roll" => $user->user_roll
+                "user_role" => $user->user_role
         ));
 
         $jwt = JWT::encode($payload, $secret_key, 'HS256');

@@ -21,9 +21,9 @@ class TransactionController extends Controller {
 
             $paginator = $this->paginator();
 
-            $user_roll = (isset($paginator->id)) ? $this->getUserRoll($paginator->id) : $this->getUserRoll($token->user->id);
+            $user_role = (isset($paginator->id)) ? $this->getUserRoll($paginator->id) : $this->getUserRoll($token->user->id);
 
-            $transactions = $this->service->getAll($this->paginator(), $token->user->id, $user_roll);
+            $transactions = $this->service->getAll($this->paginator(), $token->user->id, $user_role);
             
             if (!isset($transactions)) {
                 $this->respond($transactions);

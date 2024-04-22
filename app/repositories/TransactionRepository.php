@@ -20,12 +20,12 @@ class TransactionRepository extends Repository {
         `Transaction`.`status`
         FROM `Transaction` LEFT JOIN `User` ON `Transaction`.`user_id` = `User`.`id` ";
 
-    function getAll(Paginator $pages, int $user_id, int $user_roll) {
+    function getAll(Paginator $pages, int $user_id, int $user_role) {
         try {
-            if ($user_roll === 0 || !isset($pages->user_id)) { 
+            if ($user_role === 0 || !isset($pages->user_id)) { 
                 $stmt = $this->connection->prepare($this->get_query . "WHERE `Transaction`.`user_id` = :id LIMIT :limit OFFSET :offset");
                 $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
-            } else if (isset($pages->user_id) && $user_roll >= 0) {
+            } else if (isset($pages->user_id) && $user_role >= 0) {
                 $stmt = $this->connection->prepare($this->get_query . "WHERE `Transaction`.`user_id` = :id LIMIT :limit OFFSET :offset");
                 $stmt->bindParam(':id', $pages->user_id, PDO::PARAM_INT); 
             } else {

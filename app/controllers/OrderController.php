@@ -33,9 +33,9 @@ class OrderController extends Controller {
             
             $paginator = $this->paginator();
 
-            $user_roll = (isset($paginator->id)) ? $this->getUserRoll($paginator->id) : $this->getUserRoll($token->user->id);
+            $user_role = (isset($paginator->id)) ? $this->getUserRoll($paginator->id) : $this->getUserRoll($token->user->id);
 
-            $orders = $this->service->getAll($paginator, $token->user->id, $user_roll);
+            $orders = $this->service->getAll($paginator, $token->user->id, $user_role);
             
             if (!$orders) {
                 $this->respond($orders);

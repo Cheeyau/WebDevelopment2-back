@@ -140,7 +140,7 @@ CREATE TABLE `User` (
   `name` varchar(255) NOT NULL,
   `email_address` varchar(255) NOT NULL,
   `password` char(128) NOT NULL,
-  `user_roll` int(11) NOT NULL,
+  `user_role` int(11) NOT NULL,
   `registration` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -148,7 +148,7 @@ CREATE TABLE `User` (
 -- Dumping data for table `User`
 --
 
-INSERT INTO `User` (`id`, `name`, `email_address`, `password`, `user_roll`, `registration`) VALUES
+INSERT INTO `User` (`id`, `name`, `email_address`, `password`, `user_role`, `registration`) VALUES
 (1, 'Bob', 'bob@mail.com', '$2y$10$Zmo87y9iVspKhB7uUgjfhOLZvZ0HEeG3VzHNNKwpPcqrOTlgbQdgu', 1, '2021-03-20 15:00:00'),
 (2, 'James', 'james@mail.com', '$2y$10$Zmo87y9iVspKhB7uUgjfhOLZvZ0HEeG3VzHNNKwpPcqrOTlgbQdgu', 2, '2021-04-20 15:00:00'),
 (3, 'Elon', 'Elon@mail.com', '$2y$10$Zmo87y9iVspKhB7uUgjfhOLZvZ0HEeG3VzHNNKwpPcqrOTlgbQdgu', 0, '2021-04-20 15:00:00');
