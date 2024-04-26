@@ -79,9 +79,9 @@ class Controller {
    }
    
     public function paginator(): Paginator {
-        $pages = $this->createObjectFromPostedJson('Models\\Paginator');
-        $pages->offset = isset($pages->offset) ? $pages->offset : 0;
-        $pages->limit = isset($pages->limit) ? $pages->limit : 5;
+        $pages = new Paginator();
+        $pages->offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
+        $pages->limit = isset($_GET['limit']) ? $_GET['limit'] : 5;
         return $pages;
     }
     public function checkLoginUser(int $user_id, int $login_user_id) {
