@@ -68,6 +68,7 @@ class UserRepository extends Repository {
 
     public function create(User $user) {
         $user->registration = date_format(new DateTime(), "Y-m-d H:i:s");
+        $user->user_role = 0;
         try {
             $stmt = $this->connection->prepare("INSERT into `User` (name, email_address, password, user_role, registration) values (?,?,?,?,?)");
 
