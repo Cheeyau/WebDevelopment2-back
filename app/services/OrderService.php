@@ -30,7 +30,7 @@ class OrderService {
         return $this->repo->getById($id);
     }
 
-    public function create(int $user_id, Order $order, Transaction $transaction)  {
+    public function create(Order $order, Transaction $transaction)  {
         $saved_transaction = $this->transaction_service->create($transaction);
         $order->transaction_id = $saved_transaction->id;
         return $this->repo->create($order);        

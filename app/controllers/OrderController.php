@@ -4,6 +4,7 @@ namespace Controllers;
 
 use Services\OrderService;
 use Services\UserService;
+use Services\ProductService;
 Use Models\OrderDetail;
 Use Models\Order;
 Use Models\Transaction;
@@ -12,19 +13,30 @@ use Exception;
 class OrderController extends Controller {
 
     private $service;
+    private $product_service;
 
     function __construct() {
         $this->service = new OrderService();
         $user_service = new UserService();
+        $this->product_service = new ProductService();
         $this->setUserService($user_service);
     }
     private function convertOrderDetail(Order $order) {
         $order_detail = [];
         foreach ($order->items as $item) {
-            $order_detail[] = OrderDetail::create($item->product_id, $item->amount);
+            $order_detail[] = OrderDetail::create($item->id, $item->amount);
         }
         $order->items = $order_detail;
         return $order;        
+    }
+    private function calculateTotal(array $get_products) {
+        $products = [];
+        $total = 0;
+        foreach ($get_products as $get_product) {
+            $product = $this->product_service->getById($get_product->id);
+            if ($product) $total = $total + ($product->price * $get_product->amount);
+        }
+        return $total;
     }
 
     // user id given to get results based on user or none to get all 
@@ -47,7 +59,6 @@ class OrderController extends Controller {
         } else {
             $this->respondWithError(401, $this->jwt_not_found);
         }
-
     }
 
     public function getById($id) {
@@ -71,13 +82,10 @@ class OrderController extends Controller {
         if ($token = $this->checkJWTToken()) {
             try {
                 $order = $this->createObjectFromPostedJson("Models\\Order");
-                if($this->checkLoginUser($token->user->id, $order->user_id)) {
-                    $this->respondWithError(401, $this->user_unauthorized);
-                } else {
-                    $transaction = Transaction::create($order->user_id, $order->total, $order->status);
-                    $this->service->create($token->user->id, $this->convertOrderDetail($order), $transaction);
-                    $this->respond($order);
-                }
+                $transaction = Transaction::create($token->user->id, $this->calculateTotal($order->items), "Pending");
+                $order->user_id = $token->user->id;
+                $this->service->create($this->convertOrderDetail($order), $transaction);
+                $this->respond($order);
             } catch (Exception $e) {
                 $this->respondWithError(500, $e->getMessage());
             }
