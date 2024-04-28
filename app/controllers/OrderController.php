@@ -82,14 +82,17 @@ class OrderController extends Controller {
         if ($token = $this->checkJWTToken()) {
             try {
                 $order = $this->createObjectFromPostedJson("Models\\Order");
+                
+                // TODO pending should be database entry
+                $order->status = "Pending";
                 $transaction = Transaction::create($token->user->id, $this->calculateTotal($order->items), "Pending");
+
                 $order->user_id = $token->user->id;
                 $this->service->create($this->convertOrderDetail($order), $transaction);
                 $this->respond($order);
             } catch (Exception $e) {
                 $this->respondWithError(500, $e->getMessage());
             }
-            
         } else {
             $this->respondWithError(401, $this->jwt_not_found);
         }

@@ -81,6 +81,7 @@ class Controller {
     public function paginator(): Paginator {
         $pages = new Paginator();
         if (isset($_GET['user'])) $pages->offset = $_GET['offset'];
+        if (isset($_GET['category'])) $pages->category = $_GET['category'];
         $pages->offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
         $pages->limit = isset($_GET['limit']) ? $_GET['limit'] : 5;
         return $pages;

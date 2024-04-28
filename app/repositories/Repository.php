@@ -22,6 +22,7 @@ class Repository {
     }
 
     public function setPaginator(\PDOStatement $stmt, Paginator $pages) { 
+        if (isset($pages->category) && $pages->category > 0) $stmt->bindParam(':category_id', $pages->category, PDO::PARAM_INT);
         $stmt->bindParam(':limit', $pages->limit, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $pages->offset, PDO::PARAM_INT);
         return $stmt;

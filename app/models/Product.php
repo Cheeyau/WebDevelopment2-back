@@ -9,4 +9,6 @@ class Product {
     public string $name;
     public string $image;
     public string $description;
+    public Category $category;
+    public int $category_id;
 }

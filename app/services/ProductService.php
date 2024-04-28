@@ -16,6 +16,9 @@ class ProductService {
     public function getAll(Paginator $pages) {
         return $this->repo->getAll($pages);
     }
+    public function getCategories() {
+        return $this->repo->getCategories();
+    }
 
     public function getById(int $id) {
         return $this->repo->getById($id);

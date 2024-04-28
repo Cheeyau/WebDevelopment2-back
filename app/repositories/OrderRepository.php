@@ -36,10 +36,10 @@ class OrderRepository extends Repository {
         try {            
             
             if ($user_role === 0 || !isset($pages->user_id)) { 
-                $stmt = $this->connection->prepare($this->get_order_query . "where `Order`.`user_id` = :id LIMIT :limit OFFSET :offset");
+                $stmt = $this->connection->prepare($this->get_order_query . "where `Order`.`user_id` = :id ORDER BY `created` DESC LIMIT :limit OFFSET :offset");
                 $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
             } else if (isset($pages->user_id) && $user_role >= 0) {
-                $stmt = $this->connection->prepare($this->get_order_query . "where `Order`.`user_id` = :id LIMIT :limit OFFSET :offset");
+                $stmt = $this->connection->prepare($this->get_order_query . "where `Order`.`user_id` = :id ORDER BY `created` DESC LIMIT :limit OFFSET :offset");
                 $stmt->bindParam(':id', $pages->user_id, PDO::PARAM_INT);
             } else {
                 $stmt = $this->connection->prepare($this->get_order_query . "LIMIT :limit OFFSET :offset");

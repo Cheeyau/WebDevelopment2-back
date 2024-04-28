@@ -33,5 +33,6 @@ $router->get("/products/(\d+)", "ProductController@getById");
 $router->post("/products", "ProductController@create");
 $router->put("/products/(\d+)", "ProductController@update");
 $router->delete("/products/(\d+)", "ProductController@delete");
+$router->get("/categories", "ProductController@getAllCategory");
 
 $router->run();

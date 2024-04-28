@@ -15,7 +15,9 @@ class ProductController extends Controller {
         $user_service = new UserService();
         $this->setUserService($user_service);
     }
-    
+    public function getAllCategory() {
+        $this->respond($this->service->getCategories());
+    }
     public function getAll() {
         $this->respond($this->service->getAll($this->paginator()));
     }

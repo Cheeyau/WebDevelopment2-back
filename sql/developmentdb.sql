@@ -92,19 +92,43 @@ CREATE TABLE `Product` (
   `price` float NOT NULL,
   `name` varchar(255) NOT NULL,
   `image` varchar(255) DEFAULT NULL,
-  `description` varchar(500) DEFAULT NULL
+  `description` varchar(500) DEFAULT NULL,
+  `category_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `Product`
 --
 
-INSERT INTO `Product` (`id`, `price`, `name`, `image`, `description`) VALUES
-(1, 30, 'Zadel', 'leren-zadel', 'Heb je ook wel eens last van schurende benen of een harde zit na een lange rit? Zit je zadel weer vol water of ben je constant aan het zweten? Daar heeft Deso het Comfortabel Gel Fietszadel op bedacht! Hiermee ben je verzekerd van een lekkere zachte en brede zit. Bij dit model draait het allemaal om comfortabel fietsen, daarom kun jij met dit zadel voortaan altijd de fiets pakken!'),
-(2, 200, 'Oma fiets', 'grote-oma-fiets', 'Deze prachtige 28 inch omafiets heeft een framemaat van 57 cm. Het stuur en de zadel zijn in hoogte verstelbaar. De fiets is voorzien van dubbelwandige aluminium velgen, een bagagedrager en een terugtraprem. De kettingkast is gesloten met een lakdoek. Inclusief jasbeschermers, zijstandaard en bel. De fiets is voorzien van LED-verlichting (d.m.v. batterij). '),
-(3, 40, 'Fiets stuur groot', 'fiets-stuur-klein', 'Zeer comfortabel trekking stuur met een 25,4 mm stuurpenklemdiameter. Specificaties: Stuurklem diameter: 25,4 mm Breedte: 550 mm Dikte: 1,5 mm Handvatlengte: 140 mm Verhoging: 72 mm Terugliggend: 68° Materiaal: Staal Veiligheidslevel: 3 Gewicht: 615 gram '),
-(4, 15, 'Fiets bel klein', 'fiets-bel-groot', 'Met onze fietsbel kunt u in een paar seconden uw fiets of e-step opsporen dankzij de Apple airtag. Die u makkelijk kunt verbergen in de fietsbel. Niemand zal het merken dat uw fiets/ e-step getrackt kan worden. Het monteren van de fietsbel doet u in 1 minuut. Met onze meegeleverde schroevendraaier. U moet zich ook geen zorgen maken om uw Airtag omdat onze fietsbel waterdicht is. Dus fietsen in de regen is geen enkel probleem.'),
-(5, 25, 'Fiets ketting groot', 'fiets-ketting', 'Corrosiebestendige coating voor een langere levensduur Productspecificaties: Groep: NEXUS Model: CN-NX10 Type: 1/2 \"x 1/8\" Versnellingen voor: 1-speed Versnellingen achter: 1-speed SIL-TEC-coating: Nee. Toepassingsgebied: Stad / Comfort Gewicht: ca. 364 g (114 schakels) Verbinding: kettingpen.');
+INSERT INTO `Product` (`id`, `price`, `name`, `image`, `description`, `category_id`) VALUES
+(1, 30, 'Zadel', 'leren-zadel', 'Heb je ook wel eens last van schurende benen of een harde zit na een lange rit? Zit je zadel weer vol water of ben je constant aan het zweten? Daar heeft Deso het Comfortabel Gel Fietszadel op bedacht! Hiermee ben je verzekerd van een lekkere zachte en brede zit. Bij dit model draait het allemaal om comfortabel fietsen, daarom kun jij met dit zadel voortaan altijd de fiets pakken!', 1),
+(2, 200, 'Oma fiets', 'grote-oma-fiets', 'Deze prachtige 28 inch omafiets heeft een framemaat van 57 cm. Het stuur en de zadel zijn in hoogte verstelbaar. De fiets is voorzien van dubbelwandige aluminium velgen, een bagagedrager en een terugtraprem. De kettingkast is gesloten met een lakdoek. Inclusief jasbeschermers, zijstandaard en bel. De fiets is voorzien van LED-verlichting (d.m.v. batterij).', 2),
+(3, 40, 'Fiets stuur groot', 'fiets-stuur-klein', 'Zeer comfortabel trekking stuur met een 25,4 mm stuurpenklemdiameter. Specificaties: Stuurklem diameter: 25,4 mm Breedte: 550 mm Dikte: 1,5 mm Handvatlengte: 140 mm Verhoging: 72 mm Terugliggend: 68° Materiaal: Staal Veiligheidslevel: 3 Gewicht: 615 gram.', 5),
+(4, 15, 'Fiets bel klein', 'fiets-bel-groot', 'Met onze fietsbel kunt u in een paar seconden uw fiets of e-step opsporen dankzij de Apple airtag. Die u makkelijk kunt verbergen in de fietsbel. Niemand zal het merken dat uw fiets/ e-step getrackt kan worden. Het monteren van de fietsbel doet u in 1 minuut. Met onze meegeleverde schroevendraaier. U moet zich ook geen zorgen maken om uw Airtag omdat onze fietsbel waterdicht is. Dus fietsen in de regen is geen enkel probleem.', 4),
+(5, 25, 'Fiets ketting groot', 'fiets-ketting', 'Corrosiebestendige coating voor een langere levensduur Productspecificaties: Groep: NEXUS Model: CN-NX10 Type: 1/2 \"x 1/8\" Versnellingen voor: 1-speed Versnellingen achter: 1-speed SIL-TEC-coating: Nee. Toepassingsgebied: Stad / Comfort Gewicht: ca. 364 g (114 schakels) Verbinding: kettingpen.', 3);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Category`
+--
+
+CREATE TABLE `Category` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL
+  
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `Product`
+--
+
+INSERT INTO `Category` (`id`, `name`) VALUES
+(1,'Zadel'),
+(2,'Fiets'),
+(3,'Ketting'),
+(4,'Bel'),
+(5,'Stuur');
 
 -- --------------------------------------------------------
 
@@ -182,6 +206,11 @@ ALTER TABLE `Product`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `Category`
+--
+ALTER TABLE `Category`
+  ADD PRIMARY KEY (`id`);
+--
 -- Indexes for table `Transaction`
 --
 ALTER TABLE `Transaction`
@@ -219,6 +248,12 @@ ALTER TABLE `Order_detail`
 -- AUTO_INCREMENT for table `Product`
 --
 ALTER TABLE `Product`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `Category`
+--
+ALTER TABLE `Category`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
